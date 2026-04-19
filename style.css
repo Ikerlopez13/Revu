@@ -284,14 +284,19 @@ html {
 
 /* Responsiveness */
 @media (max-width: 968px) {
+    :root {
+        --spacing-xl: 4rem;
+        --spacing-lg: 3rem;
+    }
+
     .hero, .how-it-works > div, .section-padding > div {
         grid-template-columns: 1fr !important;
         text-align: center !important;
-        padding-top: 100px;
+        padding-top: 60px;
     }
 
     .hero-content h1 {
-        font-size: 3rem;
+        font-size: 2.8rem;
     }
 
     .hero-content p {
@@ -302,6 +307,66 @@ html {
         grid-template-columns: 1fr;
     }
 }
+
+@media (max-width: 768px) {
+    :root {
+        --spacing-xl: 3rem;
+        --spacing-lg: 2rem;
+        --spacing-md: 1.5rem;
+    }
+
+    header nav a:not(.btn) {
+        display: none;
+    }
+
+    .hero {
+        padding-top: 100px;
+        min-height: auto;
+        gap: var(--spacing-md);
+    }
+
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+
+    .feature-text h2 {
+        font-size: 2rem;
+    }
+
+    .faq-question {
+        font-size: 1.1rem;
+    }
+
+    .faq-section h2 {
+        font-size: 2.2rem !important;
+    }
+
+    footer {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+        padding: var(--spacing-md) 0 100px !important; /* Extra padding for floating button */
+    }
+
+    footer > div:last-child {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-content h1 {
+        font-size: 2.2rem;
+    }
+
+    .btn {
+        width: 100%;
+    }
+    
+    .faq-item.active .faq-answer {
+        font-size: 1rem;
+    }
+}
+
 /* FAQ Section */
 .faq-section {
     max-width: 800px;
