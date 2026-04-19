@@ -296,7 +296,7 @@ html {
     }
 
     .hero-content h1 {
-        font-size: 2.8rem;
+        font-size: 3rem;
     }
 
     .hero-content p {
@@ -310,17 +310,22 @@ html {
 
 @media (max-width: 768px) {
     :root {
-        --spacing-xl: 3rem;
-        --spacing-lg: 2rem;
+        --spacing-xl: 3.5rem;
+        --spacing-lg: 2.5rem;
         --spacing-md: 1.5rem;
     }
 
     header nav a:not(.btn) {
-        display: none;
+        display: none !important;
+    }
+
+    header .btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
     }
 
     .hero {
-        padding-top: 100px;
+        padding-top: 80px;
         min-height: auto;
         gap: var(--spacing-md);
     }
@@ -338,14 +343,20 @@ html {
     }
 
     .faq-section h2 {
-        font-size: 2.2rem !important;
+        font-size: 2.22rem !important;
     }
 
     footer {
         flex-direction: column;
         gap: 20px;
         text-align: center;
-        padding: var(--spacing-md) 0 100px !important; /* Extra padding for floating button */
+        padding: var(--spacing-lg) 0 120px !important; /* Extra padding for floating button */
+    }
+
+    footer div[style*="display: flex; gap: 20px;"] {
+        flex-direction: column !important;
+        gap: 10px !important;
+        align-items: center;
     }
 
     footer > div:last-child {
@@ -354,6 +365,10 @@ html {
 }
 
 @media (max-width: 480px) {
+    .container {
+        padding: 0 1.25rem;
+    }
+
     .hero-content h1 {
         font-size: 2.2rem;
     }
@@ -451,11 +466,6 @@ html {
     transform: rotate(45deg);
 }
 
-@media (max-width: 768px) {
-    .faq-question {
-        font-size: 1.1rem;
-    }
-}
 
 /* Contact Styles */
 .btn-whatsapp {
