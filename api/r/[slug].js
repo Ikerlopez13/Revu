@@ -6,7 +6,7 @@ const PLACES = {
     "amura":      "ChJ76Ub1HBa7Ei7DGsTfyB9N",
     "escora":     "ChLdRDnMFxe7ErlQvxrgCiY5",
     "hivernacle": "ChJn9M7DRxa7Er75lQaGR_EA",
-    "taranna":    "ChIJq7nJ2-6juEIRN8L1jWl7X4o"
+    "taranna":    "ChIJ5dteDAYXuxIRbt4EJDKWgKg"
 };
 
 export default function handler(req, res) {
