@@ -1,20 +1,28 @@
 const PLACES = {
     "birres":     "ChIzEbxIjbykEjjDI5QKJ3q6",
     "b":          "ChIzEbxIjbykEjjDI5QKJ3q6",
+    "b1":         "ChIzEbxIjbykEjjDI5QKJ3q6",
     "samalica":   "ChJPxhhjPBa7EpPtKs-kE5do",
     "s":          "ChJPxhhjPBa7EpPtKs-kE5do",
+    "s1":         "ChJPxhhjPBa7EpPtKs-kE5do",
     "palomera":   "ChKtp3uPPBa7Ev9H8jsKuGrh",
     "p":          "ChKtp3uPPBa7Ev9H8jsKuGrh",
+    "p1":         "ChKtp3uPPBa7Ev9H8jsKuGrh",
     "caseta":     "ChL_V9XfNRe7EnfQT8V1gB9P",
     "c":          "ChL_V9XfNRe7EnfQT8V1gB9P",
+    "c1":         "ChL_V9XfNRe7EnfQT8V1gB9P",
     "amura":      "ChJ76Ub1HBa7Ei7DGsTfyB9N",
     "a":          "ChJ76Ub1HBa7Ei7DGsTfyB9N",
+    "a1":         "ChJ76Ub1HBa7Ei7DGsTfyB9N",
     "escora":     "ChLdRDnMFxe7ErlQvxrgCiY5",
     "e":          "ChLdRDnMFxe7ErlQvxrgCiY5",
+    "e1":         "ChLdRDnMFxe7ErlQvxrgCiY5",
     "hivernacle": "ChJn9M7DRxa7Er75lQaGR_EA",
     "h":          "ChJn9M7DRxa7Er75lQaGR_EA",
+    "h1":         "ChJn9M7DRxa7Er75lQaGR_EA",
     "taranna":    "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
-    "t":          "ChIJ5dteDAYXuxIRbt4EJDKWgKg"
+    "t":          "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
+    "tb1":        "ChIJ5dteDAYXuxIRbt4EJDKWgKg"
 };
 
 export default function handler(req, res) {
