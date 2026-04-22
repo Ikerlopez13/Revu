@@ -1,5 +1,8 @@
 {
   "rewrites": [
-    { "source": "/r/:slug", "destination": "/api/r/[slug]" }
+    {
+      "source": "/(birres|samalica|palomera|caseta|amura|escora|hivernacle|taranna|b|s|p|c|a|e|h|t)",
+      "destination": "/api/r/[slug]?slug=$1"
+    }
   ]
 }
