@@ -22,7 +22,9 @@ const PLACES = {
     "h1":         "ChJn9M7DRxa7Er75lQaGR_EA",
     "taranna":    "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
     "t":          "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
-    "tb1":        "ChIJ5dteDAYXuxIRbt4EJDKWgKg"
+    "tb1":        "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
+    "clandestin": "ChIJ0ZMC3oS9pBIRU74WtUdNr0E",
+    "cl":         "ChIJ0ZMC3oS9pBIRU74WtUdNr0E"
 };
 
 export default function handler(req, res) {
