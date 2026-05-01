@@ -21,6 +21,11 @@
     box-sizing: border-box;
 }
 
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     color: var(--text-primary);
@@ -347,7 +352,7 @@ footer.container {
 
     .hero,
     .how-it-works > div,
-    .section-padding > div {
+    .feature-row {
         grid-template-columns: 1fr !important;
         padding-top: 60px;
     }
@@ -426,6 +431,10 @@ footer.container {
 @media (max-width: 480px) {
     .hero-content h1 {
         font-size: 2rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
     }
 
     #comprar h2 {
