@@ -24,7 +24,11 @@ const PLACES = {
     "t":          "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
     "tb1":        "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
     "clandestin": "ChIJ0ZMC3oS9pBIRU74WtUdNr0E",
-    "cl":         "ChIJ0ZMC3oS9pBIRU74WtUdNr0E"
+    "cl":         "ChIJ0ZMC3oS9pBIRU74WtUdNr0E",
+    "nvareformes":"ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
+    "nva":        "ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
+    "n":          "ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
+    "n1":         "ChIJZ6s2A9a-pBIRfkVZfhD4Yso"
 };
 
 export default function handler(req, res) {

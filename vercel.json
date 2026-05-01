@@ -1,7 +1,7 @@
 {
   "rewrites": [
     {
-      "source": "/(birres|samalica|palomera|caseta|amura|escora|hivernacle|taranna|clandestin|b|s|p|c|a|e|h|t|cl|tb1|b1|s1|p1|c1|a1|e1|h1)",
+      "source": "/(birres|samalica|palomera|caseta|amura|escora|hivernacle|taranna|clandestin|nvareformes|b|s|p|c|a|e|h|t|cl|nva|n|n1|tb1|b1|s1|p1|c1|a1|e1|h1)",
       "destination": "/api/r/[slug]?slug=$1"
     }
   ]
