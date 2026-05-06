@@ -65,7 +65,8 @@ img {
 }
 
 .section-padding {
-    padding: var(--spacing-xl) 0;
+    padding-top: var(--spacing-xl);
+    padding-bottom: var(--spacing-xl);
 }
 
 /* Buttons */
@@ -143,7 +144,8 @@ nav {
 }
 
 .nav-link {
-    padding: 10px 0;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 /* Hero Section */
@@ -334,7 +336,8 @@ html {
 
 /* Footer Base */
 footer.container {
-    padding: var(--spacing-md) 0;
+    padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -474,7 +477,8 @@ footer.container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: var(--spacing-sm) 0;
+    padding-top: var(--spacing-sm);
+    padding-bottom: var(--spacing-sm);
     background: none;
     border: none;
     text-align: left;
