@@ -28,17 +28,38 @@ const PLACES = {
     "nvareformes":"ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
     "nva":        "ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
     "n":          "ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
-    "n1":         "ChIJZ6s2A9a-pBIRfkVZfhD4Yso"
+    "n1":         "ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
+    "amat":       "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
+    "bellesa":    "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
+    "m":          "ChIJr-yi2sGvpBIR6Drh1ZzpjDg"
 };
 
-export default function handler(req, res) {
-    const slug = req.query.slug || req.query[Object.keys(req.query)[0]];
-    const placeId = PLACES[slug];
+// Load shortlink mappings (code -> place slug)
+import { promises as fs } from "fs";
+import path from "path";
 
-    if (!placeId) {
-        return res.status(404).send("Place not found");
-    }
+const SHORTLINKS_PATH = path.join(process.cwd(), "data", "shortlinks.json");
+async function loadShortlinks() {
+  try {
+    const raw = await fs.readFile(SHORTLINKS_PATH, "utf8");
+    return JSON.parse(raw);
+  } catch {
+    await fs.writeFile(SHORTLINKS_PATH, JSON.stringify({}), "utf8");
+    return {};
+  }
+}
 
-    const reviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
-    return res.redirect(302, reviewUrl);
+export default async function handler(req, res) {
+  // Resolve slug or shortcode
+  const incoming = req.query.slug || req.query[Object.keys(req.query)[0]];
+  const shortlinks = await loadShortlinks();
+  const resolvedSlug = shortlinks[incoming] || incoming; // if shortcode found, get actual slug
+  const placeId = PLACES[resolvedSlug];
+
+  if (!placeId) {
+    return res.status(404).send("Place not found");
+  }
+
+  const reviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+  return res.redirect(302, reviewUrl);
 }
