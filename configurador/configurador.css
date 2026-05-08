@@ -336,7 +336,7 @@ input, textarea { font-family: var(--font); }
 }
 
 .cfg-paint-color.visible {
-  max-height: 60px;
+  max-height: 100px;
   opacity: 1;
   padding: 12px 14px;
 }

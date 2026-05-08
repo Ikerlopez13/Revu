@@ -53,6 +53,7 @@
           <input type="radio" name="tamano" id="t-grande" value="grande" checked>
           <label for="t-grande">Grande<br><small style="font-weight:400;font-size:0.72em;color:#9a9aa5">70 × 70 mm</small></label>
         </div>
+        <div class="cfg-input-hint" style="margin-top:8px">El modelo 3D es orientativo. Tu pedido se fabrica en el tamaño elegido.</div>
       </div>
 
       <hr class="cfg-divider">
@@ -60,19 +61,9 @@
       <!-- 2. Color de filamento -->
       <div class="cfg-section" id="sec-filamento">
         <div class="cfg-section-label">Color de filamento</div>
-        <div class="cfg-swatch-row">
-          <div class="cfg-swatches" id="swatches">
-            <div class="cfg-swatch selected" data-color="#F5F5F0" style="background:#F5F5F0;box-shadow:inset 0 0 0 1px #ccc" title="Blanco"></div>
-            <div class="cfg-swatch"          data-color="#1A1A1A" style="background:#1A1A1A" title="Negro"></div>
-            <div class="cfg-swatch"          data-color="#8A8A8A" style="background:#8A8A8A" title="Gris"></div>
-            <div class="cfg-swatch"          data-color="#C8A84B" style="background:linear-gradient(135deg,#e4c060,#a07830)" title="Dorado"></div>
-            <div class="cfg-swatch"          data-color="#B0B0B8" style="background:linear-gradient(135deg,#d0d0d8,#909098)" title="Plateado"></div>
-            <div class="cfg-swatch"          data-color="#C0392B" style="background:#C0392B" title="Rojo"></div>
-          </div>
-          <div class="cfg-color-picker-wrap">
-            <input type="color" id="custom-filament-color" class="cfg-color-input" value="#F5F5F0" title="Color personalizado">
-            <span class="cfg-color-label">Otro</span>
-          </div>
+        <div class="cfg-swatches" id="swatches">
+          <div class="cfg-swatch selected" data-color="#1A1A1A" style="background:#1A1A1A" title="Negro"></div>
+          <div class="cfg-swatch"          data-color="#8A8A8A" style="background:#8A8A8A" title="Gris"></div>
         </div>
       </div>
 
@@ -89,8 +80,13 @@
             <label for="p-si">Con pintura</label>
           </div>
           <div class="cfg-paint-color" id="paint-color-row">
-            <input type="color" id="paint-color-input" class="cfg-color-input" value="#FFFFFF">
-            <span class="cfg-color-label">Color de la zona grabada</span>
+            <div class="cfg-section-label" style="margin-bottom:8px;margin-top:0">Color del grabado</div>
+            <div class="cfg-swatches" id="paint-swatches">
+              <div class="cfg-swatch selected" data-paint="#1565C0" style="background:#1565C0" title="Azul"></div>
+              <div class="cfg-swatch"          data-paint="#1A1A1A" style="background:#1A1A1A" title="Negro"></div>
+              <div class="cfg-swatch"          data-paint="#E91E8C" style="background:#E91E8C" title="Rosa"></div>
+              <div class="cfg-swatch"          data-paint="#C0392B" style="background:#C0392B" title="Rojo"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -239,28 +235,18 @@
     r.addEventListener('change', () => sync({ tamano: r.value }));
   });
 
-  /* ── Color swatches ── */
-  const swatchEls = document.querySelectorAll('.cfg-swatch');
-  const customColorInput = document.getElementById('custom-filament-color');
-
-  swatchEls.forEach(sw => {
+  /* ── Filament swatches (Negro / Gris) ── */
+  const filamentSwatches = document.querySelectorAll('#swatches .cfg-swatch');
+  filamentSwatches.forEach(sw => {
     sw.addEventListener('click', () => {
-      swatchEls.forEach(s => s.classList.remove('selected'));
+      filamentSwatches.forEach(s => s.classList.remove('selected'));
       sw.classList.add('selected');
-      const c = sw.dataset.color;
-      customColorInput.value = c;
-      sync({ filamentColor: c });
+      sync({ filamentColor: sw.dataset.color });
     });
   });
 
-  customColorInput.addEventListener('input', () => {
-    swatchEls.forEach(s => s.classList.remove('selected'));
-    sync({ filamentColor: customColorInput.value });
-  });
-
-  /* ── Pintura ── */
+  /* ── Pintura toggle + paint swatches ── */
   const paintColorRow = document.getElementById('paint-color-row');
-  const paintColorInput = document.getElementById('paint-color-input');
 
   document.querySelectorAll('input[name="pintura"]').forEach(r => {
     r.addEventListener('change', () => {
@@ -271,8 +257,13 @@
     });
   });
 
-  paintColorInput.addEventListener('input', () => {
-    sync({ paintColor: paintColorInput.value });
+  const paintSwatches = document.querySelectorAll('#paint-swatches .cfg-swatch');
+  paintSwatches.forEach(sw => {
+    sw.addEventListener('click', () => {
+      paintSwatches.forEach(s => s.classList.remove('selected'));
+      sw.classList.add('selected');
+      sync({ paintColor: sw.dataset.paint });
+    });
   });
 
   /* ── Logo radio options ── */
