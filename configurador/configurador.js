@@ -310,7 +310,8 @@ function loadSTL() {
 
       geo.computeVertexNormals();
 
-      tagMesh = new THREE.Mesh(geo, makeMat(cfg.filamentColor));
+      const bodyColor = (cfg.paint && cfg.paintColor) ? cfg.paintColor : cfg.filamentColor;
+      tagMesh = new THREE.Mesh(geo, makeMat(bodyColor));
       tagMesh.castShadow = tagMesh.receiveShadow = true;
       tagGroup.add(tagMesh);
 
@@ -358,8 +359,8 @@ export function updateTag(patch) {
 
   if (tagMesh) {
     const bodyColor = (cfg.paint && cfg.paintColor) ? cfg.paintColor : cfg.filamentColor;
-    tagMesh.material.color.set(bodyColor);
-    tagMesh.material.needsUpdate = true;
+    tagMesh.material.dispose();
+    tagMesh.material = makeMat(bodyColor);
   }
 
   clearTimeout(overlayTimer);
