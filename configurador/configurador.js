@@ -235,16 +235,7 @@ function buildCanvas(config, wUnits, hUnits) {
     ctx.restore();
   }
 
-  // Brand / link — parte inferior del overlay
-  const brand = config.linkNegocio ? shortenUrl(config.linkNegocio) : 'revuTags.com';
-  ctx.save();
-  ctx.fillStyle = inkColor;
-  ctx.font = `500 ${Math.round(PX * 0.044)}px Inter, system-ui, sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.globalAlpha = hasPaint ? 0.75 : 0.55;
-  ctx.fillText(brand, PX / 2, PY * 0.90);
-  ctx.restore();
+  // El link del negocio se programa en el NFC físico, no hace falta visualizarlo aquí.
 
   const tex = new THREE.CanvasTexture(c);
   tex.needsUpdate = true;
