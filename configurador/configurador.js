@@ -275,7 +275,22 @@ function rebuildOverlay() {
 
   // Use full detected engraving bounds
   const W = ei.w;
-  const H = ei.h;
+  // Paint fill (relleno de la cavidad para las estrellas)
+  if (cfg.paint && cfg.paintColor) {
+    const paintMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(cfg.paintColor),
+      roughness: 0.55,
+      metalness: 0.0,
+    });
+    // Ajustamos ligeramente el ancho/alto para que no sobresalga por los bordes curvos
+    paintMesh = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.98, H * 0.98), paintMat);
+    paintMesh.rotation.x = -Math.PI / 2;
+    paintMesh.position.set(ei.cx, ei.y, ei.cz);
+    paintMesh.renderOrder = 1;
+    tagGroup.add(paintMesh);
+  } else {
+    paintMesh = null;
+  }
 
   // Logo / text overlay — same position and size as engraving
   const tex = buildCanvas(cfg, W, H);
