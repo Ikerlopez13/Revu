@@ -159,7 +159,8 @@ function detectEngraving(geometry) {
     cz: (minZ + maxZ) / 2,
     w: maxX - minX,
     h: maxZ - minZ,
-    y: floorY + 0.12
+    y: floorY + 0.12,
+    maxY: maxY
   };
 }
 
@@ -192,9 +193,9 @@ function buildCanvas(config, wUnits, hUnits) {
   const ctx = c.getContext('2d');
 
   const hasPaint = config.paint && config.paintColor;
-  // If there's paint, the entire overlay text/image uses the paint color.
-  // Otherwise default to white (which contrasts nicely with grey/black).
-  const inkColor = hasPaint ? config.paintColor : 'rgba(255,255,255,0.85)';
+  const tagColor = hasPaint ? config.paintColor : config.filamentColor;
+  // Make ink contrasting so it's always readable
+  const inkColor = contrastColor(tagColor);
 
   // Logo ocupa la zona superior (~75% de altura), bien centrado
   if (config.logoMode === 'imagen' && config.logoImage) {
@@ -216,14 +217,6 @@ function buildCanvas(config, wUnits, hUnits) {
     ctx.globalAlpha = 1.0;
     ctx.drawImage(config.logoImage, dx, dy, dw, dh);
     ctx.globalAlpha = 1;
-
-    // Superposición de color (tinte) a la imagen si hay pintura
-    if (hasPaint) {
-      ctx.globalCompositeOperation = 'source-in';
-      ctx.fillStyle = config.paintColor;
-      ctx.fillRect(0, 0, PX, PY);
-      ctx.globalCompositeOperation = 'source-over';
-    }
   } else if (config.textoPersonalizado) {
     ctx.save();
     ctx.fillStyle = inkColor;
@@ -273,16 +266,33 @@ function rebuildOverlay() {
   if (paintMesh) { tagGroup.remove(paintMesh); paintMesh.geometry.dispose(); paintMesh.material.dispose(); paintMesh = null; }
   if (overlayMesh) { tagGroup.remove(overlayMesh); overlayMesh.geometry.dispose(); overlayMesh.material.map?.dispose(); overlayMesh.material.dispose(); }
 
-  // Use full detected engraving bounds
   const W = ei.w;
   const H = ei.h;
+  const isCustomizing = cfg.logoMode !== 'no' || (cfg.textoPersonalizado && cfg.textoPersonalizado.trim().length > 0);
+  const topY = ei.maxY || (ei.y + 3.0);
 
-  // Logo / text overlay — same position and size as engraving
+  // If user is adding custom text/logo, hide the physical stars by filling the cavity
+  if (isCustomizing) {
+    const bodyColor = (cfg.paint && cfg.paintColor) ? cfg.paintColor : cfg.filamentColor;
+    const patchMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(bodyColor),
+      roughness: 0.55,
+      metalness: 0.0,
+    });
+    // Create a filler plane just below the top surface to hide the holes
+    paintMesh = new THREE.Mesh(new THREE.PlaneGeometry(W * 1.15, H * 1.15), patchMat);
+    paintMesh.rotation.x = -Math.PI / 2;
+    paintMesh.position.set(ei.cx, topY - 0.02, ei.cz);
+    paintMesh.renderOrder = 1;
+    tagGroup.add(paintMesh);
+  }
+
+  // Logo / text overlay — placed on TOP surface so it's not hidden inside the star holes
   const tex = buildCanvas(cfg, W, H);
   const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthWrite: false });
   overlayMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, H), mat);
   overlayMesh.rotation.x = -Math.PI / 2;
-  overlayMesh.position.set(ei.cx, ei.y + 0.08, ei.cz);
+  overlayMesh.position.set(ei.cx, topY + 0.02, ei.cz);
   overlayMesh.renderOrder = 2;
   tagGroup.add(overlayMesh);
 }
@@ -314,7 +324,8 @@ function loadSTL() {
         cz: 0,
         w: size.x * 0.68,
         h: size.z * 0.68,
-        y: b.max.y - 0.5
+        y: b.max.y - 0.5,
+        maxY: b.max.y
       };
 
       // Fit camera
@@ -346,8 +357,9 @@ export function updateTag(patch) {
   Object.assign(cfg, patch);
 
   if (tagMesh) {
-    tagMesh.material.dispose();
-    tagMesh.material = makeMat(cfg.filamentColor);
+    const bodyColor = (cfg.paint && cfg.paintColor) ? cfg.paintColor : cfg.filamentColor;
+    tagMesh.material.color.set(bodyColor);
+    tagMesh.material.needsUpdate = true;
   }
 
   clearTimeout(overlayTimer);
