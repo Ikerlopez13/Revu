@@ -152,13 +152,18 @@ function detectEngraving(geometry) {
     count++;
   }
 
-  if (count < 10) return null;
+  const w = maxX - minX;
+  const h = maxZ - minZ;
+
+  // Si encontramos muy pocos puntos o el área detectada es una línea (w o h == 0)
+  // devolvemos null para usar el área de fallback segura.
+  if (count < 10 || w < 1 || h < 1) return null;
 
   return {
     cx: (minX + maxX) / 2,
     cz: (minZ + maxZ) / 2,
-    w: maxX - minX,
-    h: maxZ - minZ,
+    w: w,
+    h: h,
     y: floorY + 0.12
   };
 }
