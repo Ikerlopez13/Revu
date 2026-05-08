@@ -77,7 +77,7 @@ scene.add(ground);
 
 /* ─── State ──────────────────────────────────────── */
 let cfg = {
-  filamentColor: '#1A1A1A',
+  filamentColor: '#8A8A8A',
   paint: false,
   paintColor: '#1565C0',
   logoMode: 'no',
@@ -192,12 +192,9 @@ function buildCanvas(config, wUnits, hUnits) {
   const ctx = c.getContext('2d');
 
   const hasPaint = config.paint && config.paintColor;
-  const inkColor = hasPaint ? contrastColor(config.paintColor) : 'rgba(255,255,255,0.85)';
-
-  if (hasPaint) {
-    ctx.fillStyle = config.paintColor;
-    ctx.fillRect(0, 0, PX, PY);
-  }
+  // If there's paint, the entire overlay text/image uses the paint color.
+  // Otherwise default to white (which contrasts nicely with grey/black).
+  const inkColor = hasPaint ? config.paintColor : 'rgba(255,255,255,0.85)';
 
   // Logo ocupa la zona superior (~75% de altura), bien centrado
   if (config.logoMode === 'imagen' && config.logoImage) {
@@ -219,6 +216,14 @@ function buildCanvas(config, wUnits, hUnits) {
     ctx.globalAlpha = 1.0;
     ctx.drawImage(config.logoImage, dx, dy, dw, dh);
     ctx.globalAlpha = 1;
+
+    // Superposición de color (tinte) a la imagen si hay pintura
+    if (hasPaint) {
+      ctx.globalCompositeOperation = 'source-in';
+      ctx.fillStyle = config.paintColor;
+      ctx.fillRect(0, 0, PX, PY);
+      ctx.globalCompositeOperation = 'source-over';
+    }
   } else if (config.textoPersonalizado) {
     ctx.save();
     ctx.fillStyle = inkColor;
@@ -265,28 +270,12 @@ function rebuildOverlay() {
 
   const ei = engravingInfo;
 
-  if (paintMesh) { tagGroup.remove(paintMesh); paintMesh.geometry.dispose(); paintMesh.material.dispose(); }
+  if (paintMesh) { tagGroup.remove(paintMesh); paintMesh.geometry.dispose(); paintMesh.material.dispose(); paintMesh = null; }
   if (overlayMesh) { tagGroup.remove(overlayMesh); overlayMesh.geometry.dispose(); overlayMesh.material.map?.dispose(); overlayMesh.material.dispose(); }
 
   // Use full detected engraving bounds
   const W = ei.w;
   const H = ei.h;
-
-  // Paint fill
-  if (cfg.paint && cfg.paintColor) {
-    const paintMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(cfg.paintColor),
-      roughness: 0.55,
-      metalness: 0.0,
-    });
-    paintMesh = new THREE.Mesh(new THREE.PlaneGeometry(W, H), paintMat);
-    paintMesh.rotation.x = -Math.PI / 2;
-    paintMesh.position.set(ei.cx, ei.y, ei.cz);
-    paintMesh.renderOrder = 1;
-    tagGroup.add(paintMesh);
-  } else {
-    paintMesh = null;
-  }
 
   // Logo / text overlay — same position and size as engraving
   const tex = buildCanvas(cfg, W, H);
