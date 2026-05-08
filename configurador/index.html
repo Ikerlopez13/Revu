@@ -366,7 +366,7 @@
     const tamanoLabel = state.tamano === 'grande' ? 'Grande (70×70mm)' : 'Compacto (58×58mm)';
     const colorLabel   = getColorLabel(state.filamentColor);
     const pinturaLabel = state.paint
-      ? `Sí — Color: ${state.paintColor}`
+      ? `Sí — Color: ${getColorLabel(state.paintColor)}`
       : 'Sin pintura';
     const logoLabel = state.logoMode === 'no'
       ? 'Sin logo'
@@ -375,14 +375,14 @@
         : 'Solo texto';
 
     const lines = [
-      '🏷️ *PEDIDO REVU*',
+      '📦 *PEDIDO REVU*',
       '',
-      `📐 Tamaño: ${tamanoLabel}`,
-      `🎨 Color filamento: ${colorLabel}`,
-      `🖌️ Pintura: ${pinturaLabel}`,
-      `🖼️ Logo: ${logoLabel}`,
-      state.textoPersonalizado ? `✍️ Texto: ${state.textoPersonalizado}` : null,
-      state.linkNegocio ? `🔗 Link: ${state.linkNegocio}` : null,
+      `• Tamaño: ${tamanoLabel}`,
+      `• Color filamento: ${colorLabel}`,
+      `• Pintura: ${pinturaLabel}`,
+      `• Logo: ${logoLabel}`,
+      state.textoPersonalizado ? `• Texto: ${state.textoPersonalizado}` : null,
+      state.linkNegocio ? `• Link: ${state.linkNegocio}` : null,
       '',
       '📎 Preview adjunto (imagen descargada automáticamente)',
       '',
@@ -401,9 +401,11 @@
       '#8A8A8A': 'Gris',
       '#C8A84B': 'Dorado',
       '#B0B0B8': 'Plateado',
-      '#C0392B': 'Rojo'
+      '#C0392B': 'Rojo',
+      '#1565C0': 'Azul',
+      '#E91E8C': 'Rosa'
     };
-    return map[hex] || hex;
+    return map[hex.toUpperCase()] || hex;
   }
 </script>
 
