@@ -375,16 +375,16 @@
         : 'Solo texto';
 
     const lines = [
-      '📦 *PEDIDO REVU*',
+      '*PEDIDO REVU*',
       '',
-      `• Tamaño: ${tamanoLabel}`,
-      `• Color filamento: ${colorLabel}`,
-      `• Pintura: ${pinturaLabel}`,
-      `• Logo: ${logoLabel}`,
-      state.textoPersonalizado ? `• Texto: ${state.textoPersonalizado}` : null,
-      state.linkNegocio ? `• Link: ${state.linkNegocio}` : null,
+      `- Tamaño: ${tamanoLabel}`,
+      `- Color filamento: ${colorLabel}`,
+      `- Pintura: ${pinturaLabel}`,
+      `- Logo: ${logoLabel}`,
+      state.textoPersonalizado ? `- Texto: ${state.textoPersonalizado}` : null,
+      state.linkNegocio ? `- Link: ${state.linkNegocio}` : null,
       '',
-      '📎 Preview adjunto (imagen descargada automáticamente)',
+      '(⚠️ ATENCION: Por favor, adjunta ahora la imagen que se acaba de descargar en tu dispositivo)',
       '',
       '_Configurado en revuTags.com/configurador_'
     ].filter(l => l !== null);
