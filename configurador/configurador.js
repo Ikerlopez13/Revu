@@ -152,18 +152,13 @@ function detectEngraving(geometry) {
     count++;
   }
 
-  const w = maxX - minX;
-  const h = maxZ - minZ;
-
-  // Si encontramos muy pocos puntos o el área detectada es una línea (w o h == 0)
-  // devolvemos null para usar el área de fallback segura.
-  if (count < 10 || w < 1 || h < 1) return null;
+  if (count < 10) return null;
 
   return {
     cx: (minX + maxX) / 2,
     cz: (minZ + maxZ) / 2,
-    w: w,
-    h: h,
+    w: maxX - minX,
+    h: maxZ - minZ,
     y: floorY + 0.12
   };
 }
@@ -280,22 +275,7 @@ function rebuildOverlay() {
 
   // Use full detected engraving bounds
   const W = ei.w;
-  // Paint fill (relleno de la cavidad para las estrellas)
-  if (cfg.paint && cfg.paintColor) {
-    const paintMat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(cfg.paintColor),
-      roughness: 0.55,
-      metalness: 0.0,
-    });
-    // Ajustamos ligeramente el ancho/alto para que no sobresalga por los bordes curvos
-    paintMesh = new THREE.Mesh(new THREE.PlaneGeometry(W * 0.98, H * 0.98), paintMat);
-    paintMesh.rotation.x = -Math.PI / 2;
-    paintMesh.position.set(ei.cx, ei.y, ei.cz);
-    paintMesh.renderOrder = 1;
-    tagGroup.add(paintMesh);
-  } else {
-    paintMesh = null;
-  }
+  const H = ei.h;
 
   // Logo / text overlay — same position and size as engraving
   const tex = buildCanvas(cfg, W, H);
