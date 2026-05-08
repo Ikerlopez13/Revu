@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <base href="/configurador/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Configurador 3D | Revu — Personaliza tu tag NFC</title>
-  <meta name="description" content="Diseña tu tag NFC personalizado en 3D. Elige tamaño, color de filamento, pintura, logo y texto. Visualiza tu Revu en tiempo real y pídelo por WhatsApp.">
+  <meta name="description"
+    content="Diseña tu tag NFC personalizado en 3D. Elige tamaño, color de filamento, pintura, logo y texto. Visualiza tu Revu en tiempo real y pídelo por WhatsApp.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -24,390 +26,397 @@
 
   <link rel="stylesheet" href="configurador.css">
 </head>
+
 <body>
 
-<!-- ── Header ─────────────────────────────────── -->
-<header class="cfg-header">
-  <a href="/" class="cfg-header-logo">
-    <img src="/assets/logo.svg" alt="Revu" onerror="this.style.display='none'">
-    <span>revu</span>
-  </a>
-  <span class="cfg-header-badge">Configurador 3D</span>
-</header>
+  <!-- ── Header ─────────────────────────────────── -->
+  <header class="cfg-header">
+    <a href="/" class="cfg-header-logo">
+      <img src="/assets/logo.svg" alt="Revu" onerror="this.style.display='none'">
+    </a>
+    <span class="cfg-header-badge">Configurador 3D</span>
+  </header>
 
-<!-- ── Layout ─────────────────────────────────── -->
-<div class="cfg-layout">
+  <!-- ── Layout ─────────────────────────────────── -->
+  <div class="cfg-layout">
 
-  <!-- Left: Options Panel -->
-  <aside class="cfg-panel">
-    <div class="cfg-panel-inner">
-      <h1 class="cfg-panel-title">Diseña tu Revu</h1>
-      <p class="cfg-panel-sub">Personaliza tu tag NFC y vélo en 3D en tiempo real.</p>
+    <!-- Left: Options Panel -->
+    <aside class="cfg-panel">
+      <div class="cfg-panel-inner">
+        <h1 class="cfg-panel-title">Diseña tu Revu</h1>
+        <p class="cfg-panel-sub">Personaliza tu tag NFC y vélo en 3D en tiempo real.</p>
 
-      <!-- 1. Tamaño -->
-      <div class="cfg-section" id="sec-tamano">
-        <div class="cfg-section-label">Tamaño</div>
-        <div class="cfg-segment">
-          <input type="radio" name="tamano" id="t-compacto" value="compacto">
-          <label for="t-compacto">Compacto<br><small style="font-weight:400;font-size:0.72em;color:#9a9aa5">58 × 58 mm</small></label>
-          <input type="radio" name="tamano" id="t-grande" value="grande" checked>
-          <label for="t-grande">Grande<br><small style="font-weight:400;font-size:0.72em;color:#9a9aa5">70 × 70 mm</small></label>
-        </div>
-        <div class="cfg-input-hint" style="margin-top:8px">El modelo 3D es orientativo. Tu pedido se fabrica en el tamaño elegido.</div>
-      </div>
-
-      <hr class="cfg-divider">
-
-      <!-- 2. Color de filamento -->
-      <div class="cfg-section" id="sec-filamento">
-        <div class="cfg-section-label">Color de filamento</div>
-        <div class="cfg-swatches" id="swatches">
-          <div class="cfg-swatch"          data-color="#1A1A1A" style="background:#1A1A1A" title="Negro"></div>
-          <div class="cfg-swatch selected" data-color="#8A8A8A" style="background:#8A8A8A" title="Gris"></div>
-        </div>
-      </div>
-
-      <hr class="cfg-divider">
-
-      <!-- 3. Pintura del grabado -->
-      <div class="cfg-section" id="sec-pintura">
-        <div class="cfg-section-label">Pintura del grabado</div>
-        <div class="cfg-paint-section">
+        <!-- 1. Tamaño -->
+        <div class="cfg-section" id="sec-tamano">
+          <div class="cfg-section-label">Tamaño</div>
           <div class="cfg-segment">
-            <input type="radio" name="pintura" id="p-no" value="no" checked>
-            <label for="p-no">Sin pintura</label>
-            <input type="radio" name="pintura" id="p-si" value="si">
-            <label for="p-si">Con pintura</label>
+            <input type="radio" name="tamano" id="t-compacto" value="compacto">
+            <label for="t-compacto">Compacto<br><small style="font-weight:400;font-size:0.72em;color:#9a9aa5">58 × 58
+                mm</small></label>
+            <input type="radio" name="tamano" id="t-grande" value="grande" checked>
+            <label for="t-grande">Grande<br><small style="font-weight:400;font-size:0.72em;color:#9a9aa5">70 × 70
+                mm</small></label>
           </div>
-          <div class="cfg-paint-color" id="paint-color-row">
-            <div class="cfg-section-label" style="margin-bottom:8px;margin-top:0">Color del grabado</div>
-            <div class="cfg-swatches" id="paint-swatches">
-              <div class="cfg-swatch selected" data-paint="#00E5FF" style="background:#00E5FF" title="Azul"></div>
-              <div class="cfg-swatch"          data-paint="#1A1A1A" style="background:#1A1A1A" title="Negro"></div>
-              <div class="cfg-swatch"          data-paint="#FFD1DC" style="background:#FFD1DC" title="Rosa"></div>
-              <div class="cfg-swatch"          data-paint="#FF0000" style="background:#FF0000" title="Rojo"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <hr class="cfg-divider">
-
-      <!-- 4. Logo -->
-      <div class="cfg-section" id="sec-logo">
-        <div class="cfg-section-label">Logo</div>
-        <div class="cfg-logo-options">
-          <label class="cfg-radio-option selected" id="logo-opt-no">
-            <input type="radio" name="logo" value="no" checked>
-            <div class="cfg-radio-dot"></div>
-            <div>
-              <div class="cfg-radio-text">Sin logo</div>
-              <div class="cfg-radio-sub">Solo texto o tag limpio</div>
-            </div>
-          </label>
-          <label class="cfg-radio-option" id="logo-opt-imagen">
-            <input type="radio" name="logo" value="imagen">
-            <div class="cfg-radio-dot"></div>
-            <div>
-              <div class="cfg-radio-text">Subir imagen</div>
-              <div class="cfg-radio-sub">PNG o SVG, se graba en el tag</div>
-            </div>
-          </label>
-          <label class="cfg-radio-option" id="logo-opt-texto">
-            <input type="radio" name="logo" value="texto">
-            <div class="cfg-radio-dot"></div>
-            <div>
-              <div class="cfg-radio-text">Solo texto</div>
-              <div class="cfg-radio-sub">Tu nombre de negocio grabado</div>
-            </div>
-          </label>
+          <div class="cfg-input-hint" style="margin-top:8px">El modelo 3D es orientativo. Tu pedido se fabrica en el
+            tamaño elegido.</div>
         </div>
 
-        <!-- Upload zone -->
-        <div class="cfg-upload-zone" id="upload-zone">
-          <input type="file" id="logo-file-input" accept="image/png,image/svg+xml,image/jpeg,image/webp">
-          <div class="cfg-upload-icon">🖼️</div>
-          <div class="cfg-upload-text">
-            <strong>Arrastra tu logo aquí</strong><br>
-            o haz clic para seleccionar · PNG, SVG
+        <hr class="cfg-divider">
+
+        <!-- 2. Color de filamento -->
+        <div class="cfg-section" id="sec-filamento">
+          <div class="cfg-section-label">Color de filamento</div>
+          <div class="cfg-swatches" id="swatches">
+            <div class="cfg-swatch" data-color="#1A1A1A" style="background:#1A1A1A" title="Negro"></div>
+            <div class="cfg-swatch selected" data-color="#8A8A8A" style="background:#8A8A8A" title="Gris"></div>
           </div>
         </div>
 
-        <!-- Upload preview -->
-        <div class="cfg-upload-preview" id="upload-preview">
-          <img id="upload-thumb" src="" alt="Logo preview">
-          <span class="cfg-upload-preview-name" id="upload-filename">logo.png</span>
-          <button class="cfg-upload-remove" id="upload-remove" title="Eliminar">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-          </button>
+        <hr class="cfg-divider">
+
+        <!-- 3. Pintura del grabado -->
+        <div class="cfg-section" id="sec-pintura">
+          <div class="cfg-section-label">Pintura del grabado</div>
+          <div class="cfg-paint-section">
+            <div class="cfg-segment">
+              <input type="radio" name="pintura" id="p-no" value="no" checked>
+              <label for="p-no">Sin pintura</label>
+              <input type="radio" name="pintura" id="p-si" value="si">
+              <label for="p-si">Con pintura</label>
+            </div>
+            <div class="cfg-paint-color" id="paint-color-row">
+              <div class="cfg-section-label" style="margin-bottom:8px;margin-top:0">Color del grabado</div>
+              <div class="cfg-swatches" id="paint-swatches">
+                <div class="cfg-swatch selected" data-paint="#00E5FF" style="background:#00E5FF" title="Azul"></div>
+                <div class="cfg-swatch" data-paint="#1A1A1A" style="background:#1A1A1A" title="Negro"></div>
+                <div class="cfg-swatch" data-paint="#FFD1DC" style="background:#FFD1DC" title="Rosa"></div>
+                <div class="cfg-swatch" data-paint="#FF0000" style="background:#FF0000" title="Rojo"></div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <hr class="cfg-divider">
+
+        <!-- 4. Logo -->
+        <div class="cfg-section" id="sec-logo">
+          <div class="cfg-section-label">Logo</div>
+          <div class="cfg-logo-options">
+            <label class="cfg-radio-option selected" id="logo-opt-no">
+              <input type="radio" name="logo" value="no" checked>
+              <div class="cfg-radio-dot"></div>
+              <div>
+                <div class="cfg-radio-text">Sin logo</div>
+                <div class="cfg-radio-sub">Solo texto o tag limpio</div>
+              </div>
+            </label>
+            <label class="cfg-radio-option" id="logo-opt-imagen">
+              <input type="radio" name="logo" value="imagen">
+              <div class="cfg-radio-dot"></div>
+              <div>
+                <div class="cfg-radio-text">Subir imagen</div>
+                <div class="cfg-radio-sub">PNG o SVG, se graba en el tag</div>
+              </div>
+            </label>
+            <label class="cfg-radio-option" id="logo-opt-texto">
+              <input type="radio" name="logo" value="texto">
+              <div class="cfg-radio-dot"></div>
+              <div>
+                <div class="cfg-radio-text">Solo texto</div>
+                <div class="cfg-radio-sub">Tu nombre de negocio grabado</div>
+              </div>
+            </label>
+          </div>
+
+          <!-- Upload zone -->
+          <div class="cfg-upload-zone" id="upload-zone">
+            <input type="file" id="logo-file-input" accept="image/png,image/svg+xml,image/jpeg,image/webp">
+            <div class="cfg-upload-icon">🖼️</div>
+            <div class="cfg-upload-text">
+              <strong>Arrastra tu logo aquí</strong><br>
+              o haz clic para seleccionar · PNG, SVG
+            </div>
+          </div>
+
+          <!-- Upload preview -->
+          <div class="cfg-upload-preview" id="upload-preview">
+            <img id="upload-thumb" src="" alt="Logo preview">
+            <span class="cfg-upload-preview-name" id="upload-filename">logo.png</span>
+            <button class="cfg-upload-remove" id="upload-remove" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <hr class="cfg-divider">
+
+        <!-- 5. Texto personalizado -->
+        <div class="cfg-section" id="sec-texto">
+          <div class="cfg-section-label">Texto personalizado</div>
+          <input type="text" id="texto-input" class="cfg-input" placeholder="Nombre de tu negocio…" maxlength="28">
+          <div class="cfg-input-hint">Máx. 28 caracteres. Se graba centrado en el tag.</div>
+        </div>
+
+        <!-- 7. Cantidad -->
+        <div class="cfg-section" id="sec-cantidad">
+          <div class="cfg-section-label">Cantidad</div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <button type="button" id="qty-minus" style="width:40px;height:40px;border-radius:10px;border:1px solid #ddd;background:#fff;font-size:1.2rem;cursor:pointer;">-</button>
+            <input type="number" id="qty-input" class="cfg-input" value="1" min="1" max="100" style="text-align:center; width:80px; margin-bottom:0;">
+            <button type="button" id="qty-plus" style="width:40px;height:40px;border-radius:10px;border:1px solid #ddd;background:#fff;font-size:1.2rem;cursor:pointer;">+</button>
+          </div>
+          <div class="cfg-input-hint" style="margin-top:8px">¿Cuántos dispositivos iguales quieres pedir?</div>
+        </div>
+
+      </div><!-- /panel-inner -->
+    </aside>
+
+    <!-- Right: 3D Preview -->
+    <section class="cfg-preview" id="cfg-preview-section">
+      <div class="cfg-loading" id="cfg-loading">
+        <div class="cfg-spinner"></div>
+        <div class="cfg-loading-text">Cargando previsualización 3D…</div>
       </div>
+      <canvas id="cfg-canvas"></canvas>
+      <div class="cfg-preview-hint">Arrastra para girar</div>
+      <button class="cfg-download-btn" id="download-btn" title="Descargar imagen del tag">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Guardar imagen
+      </button>
+    </section>
 
-      <hr class="cfg-divider">
+  </div><!-- /layout -->
 
-      <!-- 5. Texto personalizado -->
-      <div class="cfg-section" id="sec-texto">
-        <div class="cfg-section-label">Texto personalizado</div>
-        <input
-          type="text"
-          id="texto-input"
-          class="cfg-input"
-          placeholder="Nombre de tu negocio…"
-          maxlength="28"
-        >
-        <div class="cfg-input-hint">Máx. 28 caracteres. Se graba centrado en el tag.</div>
-      </div>
-
-      <hr class="cfg-divider">
-
-      <!-- 6. Link del negocio -->
-      <div class="cfg-section" id="sec-link">
-        <div class="cfg-section-label">Link del negocio</div>
-        <input
-          type="url"
-          id="link-input"
-          class="cfg-input"
-          placeholder="maps.google.com/tu-negocio"
-        >
-        <div class="cfg-input-hint">Aparece discretamente en la parte inferior del tag.</div>
-      </div>
-
-    </div><!-- /panel-inner -->
-  </aside>
-
-  <!-- Right: 3D Preview -->
-  <section class="cfg-preview" id="cfg-preview-section">
-    <div class="cfg-loading" id="cfg-loading">
-      <div class="cfg-spinner"></div>
-      <div class="cfg-loading-text">Cargando previsualización 3D…</div>
-    </div>
-    <canvas id="cfg-canvas"></canvas>
-    <div class="cfg-preview-hint">Arrastra para girar</div>
-    <button class="cfg-download-btn" id="download-btn" title="Descargar imagen del tag">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
+  <!-- ── CTA ────────────────────────────────────── -->
+  <div class="cfg-cta-wrap">
+    <button class="cfg-cta-btn" id="cta-btn">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
       </svg>
-      Guardar imagen
+      Pedir mi Revu por WhatsApp
     </button>
-  </section>
+    <div class="cfg-cta-note">Te contactaremos para confirmar y enviar en 48h 📦</div>
+  </div>
 
-</div><!-- /layout -->
+  <!-- ── UI Controller Script ────────────────────── -->
+  <script type="module">
+    import { updateTag, getScreenshot } from './configurador.js';
 
-<!-- ── CTA ────────────────────────────────────── -->
-<div class="cfg-cta-wrap">
-  <button class="cfg-cta-btn" id="cta-btn">
-    <svg viewBox="0 0 24 24">
-      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-    </svg>
-    Pedir mi Revu por WhatsApp
-  </button>
-  <div class="cfg-cta-note">Te contactaremos para confirmar y enviar en 48h 📦</div>
-</div>
+    /* ── State ── */
+    const state = {
+      tamano: 'grande',
+      filamentColor: '#8A8A8A',
+      paint: false,
+      paintColor: '#00E5FF',
+      logoMode: 'no',
+      logoImage: null,
+      logoFileName: '',
+      textoPersonalizado: '',
+      linkNegocio: '',
+      cantidad: 1
+    };
 
-<!-- ── UI Controller Script ────────────────────── -->
-<script type="module">
-  import { updateTag, getScreenshot } from './configurador.js';
+    function sync(patch) {
+      Object.assign(state, patch);
+      updateTag({ ...state });
+    }
 
-  /* ── State ── */
-  const state = {
-    tamano: 'grande',
-    filamentColor: '#8A8A8A',
-    paint: false,
-    paintColor: '#00E5FF',
-    logoMode: 'no',
-    logoImage: null,
-    logoFileName: '',
-    textoPersonalizado: '',
-    linkNegocio: ''
-  };
-
-  function sync(patch) {
-    Object.assign(state, patch);
-    updateTag({ ...state });
-  }
-
-  /* ── Tamaño ── */
-  document.querySelectorAll('input[name="tamano"]').forEach(r => {
-    r.addEventListener('change', () => sync({ tamano: r.value }));
-  });
-
-  /* ── Filament swatches (Negro / Gris) ── */
-  const filamentSwatches = document.querySelectorAll('#swatches .cfg-swatch');
-  filamentSwatches.forEach(sw => {
-    sw.addEventListener('click', () => {
-      filamentSwatches.forEach(s => s.classList.remove('selected'));
-      sw.classList.add('selected');
-      sync({ filamentColor: sw.dataset.color });
+    /* ── Tamaño ── */
+    document.querySelectorAll('input[name="tamano"]').forEach(r => {
+      r.addEventListener('change', () => sync({ tamano: r.value }));
     });
-  });
 
-  /* ── Pintura toggle + paint swatches ── */
-  const paintColorRow = document.getElementById('paint-color-row');
-
-  document.querySelectorAll('input[name="pintura"]').forEach(r => {
-    r.addEventListener('change', () => {
-      const hasPaint = r.value === 'si';
-      if (hasPaint) paintColorRow.classList.add('visible');
-      else paintColorRow.classList.remove('visible');
-      sync({ paint: hasPaint });
+    /* ── Filament swatches (Negro / Gris) ── */
+    const filamentSwatches = document.querySelectorAll('#swatches .cfg-swatch');
+    filamentSwatches.forEach(sw => {
+      sw.addEventListener('click', () => {
+        filamentSwatches.forEach(s => s.classList.remove('selected'));
+        sw.classList.add('selected');
+        sync({ filamentColor: sw.dataset.color });
+      });
     });
-  });
 
-  const paintSwatches = document.querySelectorAll('#paint-swatches .cfg-swatch');
-  paintSwatches.forEach(sw => {
-    sw.addEventListener('click', () => {
-      paintSwatches.forEach(s => s.classList.remove('selected'));
-      sw.classList.add('selected');
-      sync({ paintColor: sw.dataset.paint });
+    /* ── Pintura toggle + paint swatches ── */
+    const paintColorRow = document.getElementById('paint-color-row');
+
+    document.querySelectorAll('input[name="pintura"]').forEach(r => {
+      r.addEventListener('change', () => {
+        const hasPaint = r.value === 'si';
+        if (hasPaint) paintColorRow.classList.add('visible');
+        else paintColorRow.classList.remove('visible');
+        sync({ paint: hasPaint });
+      });
     });
-  });
 
-  /* ── Logo radio options ── */
-  const logoOpts = document.querySelectorAll('.cfg-radio-option');
-  const uploadZone = document.getElementById('upload-zone');
-  const uploadPreview = document.getElementById('upload-preview');
-  const logoFileInput = document.getElementById('logo-file-input');
-  const uploadThumb = document.getElementById('upload-thumb');
-  const uploadFilename = document.getElementById('upload-filename');
-  const uploadRemove = document.getElementById('upload-remove');
-
-  document.querySelectorAll('input[name="logo"]').forEach(r => {
-    r.addEventListener('change', () => {
-      logoOpts.forEach(o => o.classList.remove('selected'));
-      r.closest('.cfg-radio-option').classList.add('selected');
-
-      const mode = r.value;
-      sync({ logoMode: mode });
-
-      if (mode === 'imagen') {
-        uploadZone.classList.add('visible');
-      } else {
-        uploadZone.classList.remove('visible');
-        // Keep preview if already uploaded
-      }
+    const paintSwatches = document.querySelectorAll('#paint-swatches .cfg-swatch');
+    paintSwatches.forEach(sw => {
+      sw.addEventListener('click', () => {
+        paintSwatches.forEach(s => s.classList.remove('selected'));
+        sw.classList.add('selected');
+        sync({ paintColor: sw.dataset.paint });
+      });
     });
-  });
 
-  /* ── File upload ── */
-  function handleFile(file) {
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        uploadThumb.src = e.target.result;
-        uploadFilename.textContent = file.name;
-        uploadPreview.classList.add('visible');
-        uploadZone.classList.remove('visible');
-        sync({ logoImage: img, logoFileName: file.name });
+    /* ── Logo radio options ── */
+    const logoOpts = document.querySelectorAll('.cfg-radio-option');
+    const uploadZone = document.getElementById('upload-zone');
+    const uploadPreview = document.getElementById('upload-preview');
+    const logoFileInput = document.getElementById('logo-file-input');
+    const uploadThumb = document.getElementById('upload-thumb');
+    const uploadFilename = document.getElementById('upload-filename');
+    const uploadRemove = document.getElementById('upload-remove');
+
+    document.querySelectorAll('input[name="logo"]').forEach(r => {
+      r.addEventListener('change', () => {
+        logoOpts.forEach(o => o.classList.remove('selected'));
+        r.closest('.cfg-radio-option').classList.add('selected');
+
+        const mode = r.value;
+        sync({ logoMode: mode });
+
+        if (mode === 'imagen') {
+          uploadZone.classList.add('visible');
+        } else {
+          uploadZone.classList.remove('visible');
+          // Keep preview if already uploaded
+        }
+      });
+    });
+
+    /* ── File upload ── */
+    function handleFile(file) {
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          uploadThumb.src = e.target.result;
+          uploadFilename.textContent = file.name;
+          uploadPreview.classList.add('visible');
+          uploadZone.classList.remove('visible');
+          sync({ logoImage: img, logoFileName: file.name });
+        };
+        img.src = e.target.result;
       };
-      img.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-  }
+      reader.readAsDataURL(file);
+    }
 
-  uploadZone.addEventListener('click', () => logoFileInput.click());
-  logoFileInput.addEventListener('change', () => handleFile(logoFileInput.files[0]));
+    uploadZone.addEventListener('click', () => logoFileInput.click());
+    logoFileInput.addEventListener('change', () => handleFile(logoFileInput.files[0]));
 
-  // Drag & drop
-  uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
-  uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
-  uploadZone.addEventListener('drop', e => {
-    e.preventDefault();
-    uploadZone.classList.remove('drag-over');
-    handleFile(e.dataTransfer.files[0]);
-  });
+    // Drag & drop
+    uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+    uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
+    uploadZone.addEventListener('drop', e => {
+      e.preventDefault();
+      uploadZone.classList.remove('drag-over');
+      handleFile(e.dataTransfer.files[0]);
+    });
 
-  // Remove uploaded logo
-  uploadRemove.addEventListener('click', () => {
-    uploadPreview.classList.remove('visible');
-    uploadZone.classList.add('visible');
-    logoFileInput.value = '';
-    sync({ logoImage: null, logoFileName: '' });
-  });
+    // Remove uploaded logo
+    uploadRemove.addEventListener('click', () => {
+      uploadPreview.classList.remove('visible');
+      uploadZone.classList.add('visible');
+      logoFileInput.value = '';
+      sync({ logoImage: null, logoFileName: '' });
+    });
 
-  /* ── Text input ── */
-  let textDebounce;
-  document.getElementById('texto-input').addEventListener('input', (e) => {
-    clearTimeout(textDebounce);
-    textDebounce = setTimeout(() => sync({ textoPersonalizado: e.target.value }), 120);
-  });
+    /* ── Text input ── */
+    let textDebounce;
+    document.getElementById('texto-input').addEventListener('input', (e) => {
+      clearTimeout(textDebounce);
+      textDebounce = setTimeout(() => sync({ textoPersonalizado: e.target.value }), 120);
+    });
 
-  /* ── Link input ── */
-  let linkDebounce;
-  document.getElementById('link-input').addEventListener('input', (e) => {
-    clearTimeout(linkDebounce);
-    linkDebounce = setTimeout(() => sync({ linkNegocio: e.target.value }), 200);
-  });
+    /* ── Cantidad ── */
+    const qtyInput = document.getElementById('qty-input');
+    const qtyMinus = document.getElementById('qty-minus');
+    const qtyPlus = document.getElementById('qty-plus');
 
-  /* ── Download button ── */
-  document.getElementById('download-btn').addEventListener('click', () => {
-    const dataURL = getScreenshot();
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = 'mi-revu.png';
-    a.click();
-  });
+    function updateQty(val) {
+      let q = parseInt(val, 10);
+      if (isNaN(q) || q < 1) q = 1;
+      if (q > 100) q = 100;
+      qtyInput.value = q;
+      sync({ cantidad: q });
+    }
+    qtyMinus.addEventListener('click', () => updateQty(parseInt(qtyInput.value) - 1));
+    qtyPlus.addEventListener('click', () => updateQty(parseInt(qtyInput.value) + 1));
+    qtyInput.addEventListener('change', (e) => updateQty(e.target.value));
 
-  /* ── CTA — WhatsApp + auto-download ── */
-  document.getElementById('cta-btn').addEventListener('click', () => {
-    // 1. Download preview automatically
-    const dataURL = getScreenshot();
-    const a = document.createElement('a');
-    a.href = dataURL;
-    a.download = 'mi-revu-preview.png';
-    a.click();
+    /* ── Download button ── */
+    document.getElementById('download-btn').addEventListener('click', () => {
+      const dataURL = getScreenshot();
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'mi-revu.png';
+      a.click();
+    });
 
-    // 2. Build WhatsApp message
-    const tamanoLabel = state.tamano === 'grande' ? 'Grande (70×70mm)' : 'Compacto (58×58mm)';
-    const colorLabel   = getColorLabel(state.filamentColor);
-    const pinturaLabel = state.paint
-      ? `Sí — Color: ${getColorLabel(state.paintColor)}`
-      : 'Sin pintura';
-    const logoLabel = state.logoMode === 'no'
-      ? 'Sin logo'
-      : state.logoMode === 'imagen'
-        ? `Sí — archivo: ${state.logoFileName || 'logo'}`
-        : 'Solo texto';
+    /* ── CTA — WhatsApp + auto-download ── */
+    document.getElementById('cta-btn').addEventListener('click', () => {
+      // 1. Download preview automatically
+      const dataURL = getScreenshot();
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'mi-revu-preview.png';
+      a.click();
 
-    const lines = [
-      '*PEDIDO REVU*',
-      '',
-      `- Tamaño: ${tamanoLabel}`,
-      `- Color filamento: ${colorLabel}`,
-      `- Pintura: ${pinturaLabel}`,
-      `- Logo: ${logoLabel}`,
-      state.textoPersonalizado ? `- Texto: ${state.textoPersonalizado}` : null,
-      state.linkNegocio ? `- Link: ${state.linkNegocio}` : null,
-      '',
-      '(⚠️ ATENCION: Por favor, adjunta ahora la imagen que se acaba de descargar en tu dispositivo)',
-      '',
-      '_Configurado en revuTags.com/configurador_'
-    ].filter(l => l !== null);
+      // 2. Build WhatsApp message
+      const tamanoLabel = state.tamano === 'grande' ? 'Grande (70×70mm)' : 'Compacto (58×58mm)';
+      const colorLabel = getColorLabel(state.filamentColor);
+      const pinturaLabel = state.paint
+        ? `Sí — Color: ${getColorLabel(state.paintColor)}`
+        : 'Sin pintura';
+      const logoLabel = state.logoMode === 'no'
+        ? 'Sin logo'
+        : state.logoMode === 'imagen'
+          ? `Sí — archivo: ${state.logoFileName || 'logo'}`
+          : 'Solo texto';
 
-    const msg = encodeURIComponent(lines.join('\n'));
-    window.open(`https://wa.me/34675977794?text=${msg}`, '_blank');
-  });
+      const lines = [
+        '*PEDIDO REVU*',
+        '',
+        `- Cantidad: ${state.cantidad} unidad${state.cantidad > 1 ? 'es' : ''}`,
+        `- Tamaño: ${tamanoLabel}`,
+        `- Color filamento: ${colorLabel}`,
+        `- Pintura: ${pinturaLabel}`,
+        `- Logo: ${logoLabel}`,
+        state.textoPersonalizado ? `- Texto: ${state.textoPersonalizado}` : null,
+        state.linkNegocio ? `- Link: ${state.linkNegocio}` : null,
+        '',
+        '(⚠️ ATENCION: Por favor, adjunta ahora la imagen que se acaba de descargar en tu dispositivo)',
+        '',
+        '_Configurado en revuTags.com/configurador_'
+      ].filter(l => l !== null);
 
-  /* ── Helpers ── */
-  function getColorLabel(hex) {
-    const map = {
-      '#F5F5F0': 'Blanco',
-      '#1A1A1A': 'Negro',
-      '#8A8A8A': 'Gris',
-      '#C8A84B': 'Dorado',
-      '#B0B0B8': 'Plateado',
-      '#FF0000': 'Rojo',
-      '#00E5FF': 'Azul',
-      '#FFD1DC': 'Rosa'
-    };
-    return map[hex.toUpperCase()] || hex;
-  }
-</script>
+      const msg = encodeURIComponent(lines.join('\n'));
+      window.open(`https://wa.me/34675977794?text=${msg}`, '_blank');
+    });
+
+    /* ── Helpers ── */
+    function getColorLabel(hex) {
+      const map = {
+        '#F5F5F0': 'Blanco',
+        '#1A1A1A': 'Negro',
+        '#8A8A8A': 'Gris',
+        '#C8A84B': 'Dorado',
+        '#B0B0B8': 'Plateado',
+        '#FF0000': 'Rojo',
+        '#00E5FF': 'Azul',
+        '#FFD1DC': 'Rosa'
+      };
+      return map[hex.toUpperCase()] || hex;
+    }
+  </script>
 
 </body>
+
 </html>
