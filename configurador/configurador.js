@@ -79,7 +79,7 @@ scene.add(ground);
 let cfg = {
   filamentColor: '#8A8A8A',
   paint: false,
-  paintColor: '#1565C0',
+  paintColor: '#00E5FF',
   logoMode: 'no',
   logoImage: null,
   logoFileName: '',
