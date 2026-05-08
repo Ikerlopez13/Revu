@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/configurador",
+      "destination": "/configurador/index.html"
+    },
+    {
       "source": "/m",
       "destination": "/api/r/[slug]?slug=m"
     },
