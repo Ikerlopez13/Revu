@@ -1,350 +1,341 @@
 /**
- * configurador.js — Three.js 3D tag scene
- * Loaded as type="module". Uses Three.js r165 via CDN import map.
+ * configurador.js — Three.js 3D tag scene using real STL model
+ * Loads the actual printed tag STL, applies physical materials and
+ * projects text/logo as a canvas texture on the top face.
  */
 import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { OrbitControls }  from 'three/addons/controls/OrbitControls.js';
+import { STLLoader }      from 'three/addons/loaders/STLLoader.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-/* ─── Constants ─────────────────────────────────── */
-const SIZES = {
-  compacto: { w: 58, h: 58, d: 4 },
-  grande:   { w: 70, h: 70, d: 4 }
-};
-
-const SCALE = 1 / 14; // mm → Three.js units
-
-const PRESET_COLORS = {
-  blanco:   '#F5F5F0',
-  negro:    '#1A1A1A',
-  gris:     '#8A8A8A',
-  dorado:   '#C8A84B',
-  plateado: '#B0B0B8',
-  rojo:     '#C0392B'
-};
-
-/* ─── Scene Setup ────────────────────────────────── */
-const canvas  = document.getElementById('cfg-canvas');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, preserveDrawingBuffer: true });
+/* ─── Canvas & Renderer ─────────────────────────── */
+const canvas   = document.getElementById('cfg-canvas');
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: false,
+  preserveDrawingBuffer: true   // needed for screenshot
+});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
+renderer.shadowMap.type    = THREE.PCFSoftShadowMap;
+renderer.outputColorSpace   = THREE.SRGBColorSpace;
+renderer.toneMapping        = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.15;
 
+/* ─── Scene ──────────────────────────────────────── */
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#EAEAEE');
+scene.background = new THREE.Color('#DDDDE2');
 
-const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
-camera.position.set(0, 1.8, 6.5);
+/* ─── Environment (RoomEnvironment = studio reflections) ── */
+const pmremGenerator = new THREE.PMREMGenerator(renderer);
+pmremGenerator.compileEquirectangularShader();
+const roomEnv = new RoomEnvironment(renderer);
+const envTexture = pmremGenerator.fromScene(roomEnv).texture;
+scene.environment = envTexture;   // reflections on physical material
+scene.background  = new THREE.Color('#DDDDE2');
+roomEnv.dispose();
+pmremGenerator.dispose();
+
+/* ─── Camera ─────────────────────────────────────── */
+const camera = new THREE.PerspectiveCamera(35, 1, 0.01, 200);
+camera.position.set(0, 60, 160);
 
 /* ─── Controls ───────────────────────────────────── */
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true;
-controls.dampingFactor = 0.07;
-controls.enableZoom = false;
-controls.enablePan = false;
-controls.minPolarAngle = Math.PI / 6;
-controls.maxPolarAngle = Math.PI / 2;
-controls.autoRotate = true;
-controls.autoRotateSpeed = 0.9;
+controls.enableDamping    = true;
+controls.dampingFactor    = 0.07;
+controls.enableZoom       = false;
+controls.enablePan        = false;
+controls.minPolarAngle    = Math.PI / 8;
+controls.maxPolarAngle    = Math.PI / 2.1;
+controls.autoRotate       = true;
+controls.autoRotateSpeed  = 1.0;
+controls.target.set(0, 5, 0);
 
-// Hide hint after first drag
-let hintHidden = false;
 controls.addEventListener('start', () => {
-  if (!hintHidden) {
-    hintHidden = true;
-    document.querySelector('.cfg-preview-hint')?.classList.add('hidden');
-  }
+  document.querySelector('.cfg-preview-hint')?.classList.add('hidden');
 });
 
 /* ─── Lighting ───────────────────────────────────── */
-// Ambient
-const ambient = new THREE.AmbientLight(0xffffff, 0.55);
+const ambient = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambient);
 
-// Key light (top-left)
-const keyLight = new THREE.DirectionalLight(0xffffff, 1.6);
-keyLight.position.set(-4, 8, 5);
+const keyLight = new THREE.DirectionalLight(0xffffff, 2.0);
+keyLight.position.set(-60, 120, 80);
 keyLight.castShadow = true;
 keyLight.shadow.mapSize.set(2048, 2048);
-keyLight.shadow.camera.near = 0.5;
-keyLight.shadow.camera.far = 30;
-keyLight.shadow.camera.left = -8;
-keyLight.shadow.camera.right = 8;
-keyLight.shadow.camera.top = 8;
-keyLight.shadow.camera.bottom = -8;
-keyLight.shadow.bias = -0.0005;
+keyLight.shadow.camera.near   = 1;
+keyLight.shadow.camera.far    = 400;
+keyLight.shadow.camera.left   = -120;
+keyLight.shadow.camera.right  = 120;
+keyLight.shadow.camera.top    = 120;
+keyLight.shadow.camera.bottom = -120;
+keyLight.shadow.bias          = -0.0004;
 scene.add(keyLight);
 
-// Fill light (opposite)
-const fillLight = new THREE.DirectionalLight(0xffffff, 0.6);
-fillLight.position.set(4, 4, -3);
+const fillLight = new THREE.DirectionalLight(0xeeeeff, 0.6);
+fillLight.position.set(80, 60, -60);
 scene.add(fillLight);
 
-// Rim light (backlit glow)
-const rimLight = new THREE.DirectionalLight(0xeef0ff, 0.4);
-rimLight.position.set(0, -3, -6);
+const rimLight = new THREE.DirectionalLight(0xfff0dd, 0.35);
+rimLight.position.set(0, -40, -100);
 scene.add(rimLight);
 
 /* ─── Ground shadow plane ────────────────────────── */
 const shadowPlane = new THREE.Mesh(
-  new THREE.PlaneGeometry(30, 30),
-  new THREE.ShadowMaterial({ opacity: 0.18, transparent: true })
+  new THREE.PlaneGeometry(600, 600),
+  new THREE.ShadowMaterial({ opacity: 0.22, transparent: true })
 );
 shadowPlane.rotation.x = -Math.PI / 2;
-shadowPlane.position.y = -2.5;
+shadowPlane.position.y = -0.5;
 shadowPlane.receiveShadow = true;
 scene.add(shadowPlane);
+
+/* ─── State ──────────────────────────────────────── */
+let currentConfig = {
+  filamentColor:    '#F5F5F0',
+  paint:            false,
+  paintColor:       '#FFFFFF',
+  logoMode:         'no',
+  logoImage:        null,
+  logoFileName:     '',
+  textoPersonalizado: '',
+  linkNegocio:      ''
+};
 
 /* ─── Tag Group ──────────────────────────────────── */
 const tagGroup = new THREE.Group();
 scene.add(tagGroup);
 
-let bodyMesh = null;
-let engraveMesh = null;
-let brandMesh = null;
-let nfcMesh = null;
+let tagMesh       = null;   // the STL body mesh
+let overlayMesh   = null;   // canvas texture plane on top face
+let tagBBox       = null;   // bounding box after loading
 
-/* ─── Helpers ────────────────────────────────────── */
-function hexToColor(hex) {
-  return new THREE.Color(hex);
+/* ─── Material helpers ───────────────────────────── */
+function makeTagMaterial(hex) {
+  const color = new THREE.Color(hex);
+
+  // Detect metallic presets
+  const isGold    = hex === '#C8A84B';
+  const isSilver  = hex === '#B0B0B8';
+  const isMetallic = isGold || isSilver;
+
+  return new THREE.MeshPhysicalMaterial({
+    color,
+    roughness:    isMetallic ? 0.25 : 0.50,
+    metalness:    isMetallic ? 0.70 : 0.05,
+    clearcoat:    isMetallic ? 0.20 : 0.40,      // plastic sheen
+    clearcoatRoughness: 0.35,
+    reflectivity: 0.4,
+    envMapIntensity: isMetallic ? 1.2 : 0.7,
+  });
 }
 
-function darkenColor(hex, amount = 0.18) {
-  const c = new THREE.Color(hex);
-  const h = { r: 0, g: 0, b: 0 };
-  c.getHSL(h);
-  return new THREE.Color().setHSL(h.h, h.s, Math.max(0, h.l - amount));
-}
-
-/* Build a CanvasTexture with text or image */
-function buildEngraveTexture(config) {
-  const SIZE = 512;
-  const offscreen = document.createElement('canvas');
-  offscreen.width = SIZE;
-  offscreen.height = SIZE;
-  const ctx = offscreen.getContext('2d');
-
-  // Background (transparent — the mesh material colour shows through)
-  ctx.clearRect(0, 0, SIZE, SIZE);
-
-  const hasPaint = config.paint && config.paintColor;
-  const fillColor = hasPaint ? config.paintColor : '#00000033';
-
-  if (config.logoMode === 'imagen' && config.logoImage) {
-    // Draw uploaded image centred
-    ctx.drawImage(config.logoImage, SIZE * 0.1, SIZE * 0.1, SIZE * 0.8, SIZE * 0.72);
-  } else if ((config.logoMode === 'texto' || config.logoMode === 'imagen') && config.textoPersonalizado) {
-    // Draw personalised text
-    ctx.save();
-    ctx.fillStyle = fillColor;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-
-    const maxWidth = SIZE * 0.85;
-    let fontSize = 88;
-    ctx.font = `800 ${fontSize}px Inter, system-ui, sans-serif`;
-
-    // Shrink to fit
-    while (ctx.measureText(config.textoPersonalizado).width > maxWidth && fontSize > 20) {
-      fontSize -= 4;
-      ctx.font = `800 ${fontSize}px Inter, system-ui, sans-serif`;
-    }
-
-    ctx.fillText(config.textoPersonalizado, SIZE / 2, SIZE * 0.42);
-    ctx.restore();
-  }
-
-  // Brand line at bottom
-  ctx.save();
-  ctx.fillStyle = fillColor;
-  ctx.font = '500 26px Inter, system-ui, sans-serif';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  const brand = config.linkNegocio ? shortenUrl(config.linkNegocio) : 'revuTags.com';
-  ctx.fillText(brand, SIZE / 2, SIZE * 0.88);
-  ctx.restore();
-
-  const tex = new THREE.CanvasTexture(offscreen);
-  tex.needsUpdate = true;
-  return tex;
-}
-
+/* ─── Canvas texture for text / logo overlay ──────── */
 function shortenUrl(url) {
   try {
     const u = new URL(url.startsWith('http') ? url : 'https://' + url);
     return u.hostname.replace(/^www\./, '');
-  } catch {
-    return url.slice(0, 22);
-  }
+  } catch { return url.slice(0, 24); }
 }
 
-/* Build opaque engraving texture (solid colour for paint mode) */
-function buildEngraveBackground(config) {
+function buildOverlayTexture(config, faceWidthMM, faceHeightMM) {
+  const PX = 1024;
+  const PY = Math.round(PX * (faceHeightMM / faceWidthMM));
+
+  const off = document.createElement('canvas');
+  off.width  = PX;
+  off.height = PY;
+  const ctx  = off.getContext('2d');
+
+  ctx.clearRect(0, 0, PX, PY);
+
   const hasPaint = config.paint && config.paintColor;
-  if (!hasPaint) return null;
-  return null; // We use the material colour for the base
+  const inkColor = hasPaint ? config.paintColor : 'rgba(0,0,0,0.55)';
+
+  // ── Logo / texto centrado ──────────────────────────
+  if (config.logoMode === 'imagen' && config.logoImage) {
+    // Draw uploaded image, centred, scaled to 70% of face
+    const imgW = PX * 0.70;
+    const imgH = PY * 0.60;
+    const imgX = (PX - imgW) / 2;
+    const imgY = (PY - imgH) / 2 - PY * 0.04;
+
+    ctx.globalAlpha = hasPaint ? 1.0 : 0.6;
+    ctx.drawImage(config.logoImage, imgX, imgY, imgW, imgH);
+    ctx.globalAlpha = 1.0;
+
+  } else if (config.textoPersonalizado) {
+    ctx.save();
+    ctx.fillStyle  = inkColor;
+    ctx.textAlign  = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.shadowColor   = 'rgba(0,0,0,0.18)';
+    ctx.shadowBlur    = 6;
+    ctx.shadowOffsetY = 3;
+
+    const maxW    = PX * 0.84;
+    let fontSize  = 140;
+    ctx.font = `800 ${fontSize}px Inter, system-ui, sans-serif`;
+    while (ctx.measureText(config.textoPersonalizado).width > maxW && fontSize > 28) {
+      fontSize -= 6;
+      ctx.font = `800 ${fontSize}px Inter, system-ui, sans-serif`;
+    }
+    ctx.fillText(config.textoPersonalizado, PX / 2, PY * 0.43);
+    ctx.restore();
+  }
+
+  // ── Brand link at bottom ───────────────────────────
+  const brand = config.linkNegocio ? shortenUrl(config.linkNegocio) : 'revuTags.com';
+  ctx.save();
+  ctx.fillStyle    = inkColor;
+  ctx.font         = `500 ${Math.round(PX * 0.042)}px Inter, system-ui, sans-serif`;
+  ctx.textAlign    = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.globalAlpha  = 0.55;
+  ctx.fillText(brand, PX / 2, PY * 0.88);
+  ctx.restore();
+
+  const tex = new THREE.CanvasTexture(off);
+  tex.needsUpdate = true;
+  return tex;
 }
 
-/* ─── Build / Rebuild Tag ────────────────────────── */
-function buildTag(config) {
-  // Remove old meshes
-  tagGroup.clear();
+/* ─── Overlay mesh (canvas plane on top face) ─────── */
+function buildOverlayMesh(config) {
+  if (!tagBBox) return;
 
-  const sz = SIZES[config.tamano] || SIZES.grande;
-  const W = sz.w * SCALE;
-  const H = sz.h * SCALE;
-  const D = sz.d * SCALE;
-  const radius = 0.22; // corner radius in scene units
+  // Remove existing overlay
+  if (overlayMesh) { tagGroup.remove(overlayMesh); overlayMesh.geometry.dispose(); }
 
-  const filamentColor = new THREE.Color(config.filamentColor || '#1A1A1A');
+  const size   = tagBBox.getSize(new THREE.Vector3());
+  const center = tagBBox.getCenter(new THREE.Vector3());
 
-  /* Body */
-  const bodyGeo = new RoundedBoxGeometry(W, D, H, 4, radius);
-  const bodyMat = new THREE.MeshStandardMaterial({
-    color: filamentColor,
-    roughness: 0.55,
-    metalness: 0.08,
-  });
-  // Metallic overrides for special colours
-  if (['#C8A84B', '#B0B0B8'].includes(config.filamentColor)) {
-    bodyMat.metalness = 0.55;
-    bodyMat.roughness = 0.3;
-  }
-  bodyMesh = new THREE.Mesh(bodyGeo, bodyMat);
-  bodyMesh.castShadow = true;
-  bodyMesh.receiveShadow = true;
-  tagGroup.add(bodyMesh);
+  // Face width/height in scene units → pass same ratio to texture
+  const faceW = size.x * 0.82;
+  const faceH = size.z * 0.82;
 
-  /* Engraved face plane */
-  const engraveW = W * 0.82;
-  const engraveH = H * 0.82;
-  const engraveGeo = new THREE.PlaneGeometry(engraveW, engraveH);
+  const tex = buildOverlayTexture(config, faceW, faceH);
 
   const hasPaint = config.paint && config.paintColor;
-  const engraveBaseColor = hasPaint
-    ? new THREE.Color(config.paintColor)
-    : darkenColor(config.filamentColor || '#1A1A1A', 0.16);
 
-  const engraveMat = new THREE.MeshStandardMaterial({
-    color: engraveBaseColor,
-    roughness: 0.7,
-    metalness: 0.0,
+  const mat = new THREE.MeshBasicMaterial({
+    map:         tex,
     transparent: true,
-    opacity: hasPaint ? 1.0 : 0.55,
+    depthWrite:  false,
+    opacity:     hasPaint ? 1.0 : 0.85,
   });
-  engraveMesh = new THREE.Mesh(engraveGeo, engraveMat);
-  engraveMesh.rotation.x = -Math.PI / 2;
-  engraveMesh.position.set(0, D / 2 + 0.001, 0);
-  tagGroup.add(engraveMesh);
 
-  /* Text / logo overlay */
-  const tex = buildEngraveTexture(config);
-  const overlayMat = new THREE.MeshBasicMaterial({
-    map: tex,
-    transparent: true,
-    depthWrite: false,
-  });
-  const overlayMesh = new THREE.Mesh(engraveGeo.clone(), overlayMat);
+  const geo = new THREE.PlaneGeometry(faceW, faceH);
+  overlayMesh = new THREE.Mesh(geo, mat);
   overlayMesh.rotation.x = -Math.PI / 2;
-  overlayMesh.position.set(0, D / 2 + 0.003, 0);
+  overlayMesh.position.set(
+    center.x,
+    tagBBox.max.y + 0.3,   // slightly above top face
+    center.z
+  );
+  overlayMesh.renderOrder = 1;
   tagGroup.add(overlayMesh);
-
-  /* NFC indicator dot (subtle circle on bottom face) */
-  const nfcGeo = new THREE.CircleGeometry(W * 0.12, 32);
-  const nfcMat = new THREE.MeshStandardMaterial({
-    color: darkenColor(config.filamentColor || '#1A1A1A', 0.12),
-    roughness: 0.8,
-    transparent: true,
-    opacity: 0.4,
-  });
-  nfcMesh = new THREE.Mesh(nfcGeo, nfcMat);
-  nfcMesh.rotation.x = Math.PI / 2;
-  nfcMesh.position.set(0, -D / 2 - 0.001, 0);
-  tagGroup.add(nfcMesh);
-
-  // Subtle tilt for visual interest
-  tagGroup.rotation.x = 0.12;
 }
 
-/* ─── Update existing tag (no rebuild) ──────────── */
-function updateTagMaterials(config) {
-  if (!bodyMesh) return;
+/* ─── Load STL ───────────────────────────────────── */
+function loadSTL() {
+  const loader = new STLLoader();
 
-  const filamentColor = new THREE.Color(config.filamentColor || '#1A1A1A');
-  bodyMesh.material.color.set(filamentColor);
-  if (['#C8A84B', '#B0B0B8'].includes(config.filamentColor)) {
-    bodyMesh.material.metalness = 0.55;
-    bodyMesh.material.roughness = 0.3;
-  } else {
-    bodyMesh.material.metalness = 0.08;
-    bodyMesh.material.roughness = 0.55;
-  }
-  bodyMesh.material.needsUpdate = true;
+  loader.load(
+    '/assets/tag-revu.stl',
+
+    (geometry) => {
+      // Centre geometry at origin
+      geometry.computeBoundingBox();
+      const box    = geometry.boundingBox;
+      const centre = box.getCenter(new THREE.Vector3());
+      geometry.translate(-centre.x, -box.min.y, -centre.z);   // sit on Y=0
+
+      geometry.computeVertexNormals();
+
+      const mat  = makeTagMaterial(currentConfig.filamentColor);
+      tagMesh = new THREE.Mesh(geometry, mat);
+      tagMesh.castShadow    = true;
+      tagMesh.receiveShadow = true;
+
+      tagGroup.add(tagMesh);
+
+      // Store bounding box in world space (after translation)
+      geometry.computeBoundingBox();
+      tagBBox = geometry.boundingBox.clone();
+
+      // Adjust camera & controls target based on model height
+      const size = tagBBox.getSize(new THREE.Vector3());
+      const maxD = Math.max(size.x, size.y, size.z);
+      camera.position.set(0, maxD * 0.9, maxD * 2.8);
+      controls.target.set(0, size.y * 0.4, 0);
+      controls.update();
+
+      // Build text overlay
+      buildOverlayMesh(currentConfig);
+
+      // Signal ready
+      const loading = document.getElementById('cfg-loading');
+      if (loading) {
+        loading.style.opacity = '0';
+        setTimeout(() => loading.remove(), 500);
+      }
+    },
+
+    // Progress
+    (xhr) => {
+      const pct = Math.round((xhr.loaded / xhr.total) * 100);
+      const txt = document.querySelector('.cfg-loading-text');
+      if (txt) txt.textContent = `Cargando modelo 3D… ${pct}%`;
+    },
+
+    // Error
+    (err) => {
+      console.error('STL load error:', err);
+      const txt = document.querySelector('.cfg-loading-text');
+      if (txt) txt.textContent = 'Error al cargar el modelo. Recarga la página.';
+    }
+  );
 }
 
 /* ─── Public API ─────────────────────────────────── */
-let currentConfig = {
-  tamano: 'grande',
-  filamentColor: '#1A1A1A',
-  paint: false,
-  paintColor: '#FFFFFF',
-  logoMode: 'no',
-  logoImage: null,
-  logoFileName: '',
-  textoPersonalizado: '',
-  linkNegocio: ''
-};
-
-let rebuildQueued = false;
-let textureQueued = false;
+let overlayDebounce;
 
 export function updateTag(patch) {
-  const prev = { ...currentConfig };
   Object.assign(currentConfig, patch);
 
-  const needsRebuild = prev.tamano !== currentConfig.tamano;
-  const needsTexture = !needsRebuild;
-
-  if (needsRebuild && !rebuildQueued) {
-    rebuildQueued = true;
-    requestAnimationFrame(() => {
-      rebuildQueued = false;
-      buildTag(currentConfig);
-    });
-  } else if (needsTexture && !textureQueued) {
-    textureQueued = true;
-    requestAnimationFrame(() => {
-      textureQueued = false;
-      // Rebuild for simplicity (fast enough)
-      buildTag(currentConfig);
-    });
+  // Update body material colour immediately
+  if (tagMesh) {
+    const mat = makeTagMaterial(currentConfig.filamentColor);
+    tagMesh.material.dispose();
+    tagMesh.material = mat;
   }
+
+  // Debounce overlay rebuild (canvas ops can be slow)
+  clearTimeout(overlayDebounce);
+  overlayDebounce = setTimeout(() => buildOverlayMesh(currentConfig), 80);
 }
 
 export function getScreenshot() {
-  // Force render before capture
   renderer.render(scene, camera);
   return renderer.domElement.toDataURL('image/png');
 }
 
-/* ─── Resize Handler ─────────────────────────────── */
+/* ─── Resize ─────────────────────────────────────── */
 function onResize() {
   const el = canvas.parentElement;
-  const w = el.clientWidth;
-  const h = el.clientHeight;
+  const w  = el.clientWidth;
+  const h  = el.clientHeight;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
   camera.updateProjectionMatrix();
 }
-
-const ro = new ResizeObserver(onResize);
-ro.observe(canvas.parentElement);
+new ResizeObserver(onResize).observe(canvas.parentElement);
 onResize();
 
-/* ─── Render Loop ────────────────────────────────── */
+/* ─── Render loop ────────────────────────────────── */
 function animate() {
   requestAnimationFrame(animate);
   controls.update();
@@ -352,9 +343,5 @@ function animate() {
 }
 
 /* ─── Init ───────────────────────────────────────── */
-buildTag(currentConfig);
+loadSTL();
 animate();
-
-// Signal ready
-document.querySelector('.cfg-loading')?.classList.add('done');
-setTimeout(() => document.querySelector('.cfg-loading')?.remove(), 600);
