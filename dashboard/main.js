@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const type = document.getElementById('client-type').value;
         const payment = parseFloat(document.getElementById('client-payment').value);
         const revus = parseInt(document.getElementById('client-revus').value);
+        const slug = document.getElementById('client-slug').value;
         const date = new Date().toISOString().split('T')[0];
 
         const newClient = {
@@ -44,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             type,
             payment,
             revus,
+            slug,
             date
         };
 
@@ -113,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${client.name}</td>
+                <td><a href="https://revutags.com/${client.slug || ''}" target="_blank">/${client.slug || ''}</a></td>
                 <td><span class="badge badge-${client.type}">${client.type === 'monthly' ? 'Mensual' : 'Pago Único'}</span></td>
                 <td>${revenue.toFixed(2)}€</td>
                 <td>${client.revus}</td>

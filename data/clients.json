@@ -5,6 +5,7 @@
     "type": "monthly",
     "payment": 29.99,
     "revus": 100,
+    "slug": "la-barca",
     "date": "2026-05-01"
   },
   {
@@ -13,6 +14,7 @@
     "type": "monthly",
     "payment": 29.99,
     "revus": 50,
+    "slug": "central",
     "date": "2026-05-02"
   },
   {
@@ -21,6 +23,7 @@
     "type": "single",
     "payment": 150.00,
     "revus": 200,
+    "slug": "talleres-perez",
     "date": "2026-04-15"
   },
   {
@@ -29,6 +32,7 @@
     "type": "single",
     "payment": 89.99,
     "revus": 80,
+    "slug": "sonrisas",
     "date": "2026-04-20"
   },
   {
@@ -37,6 +41,7 @@
     "type": "monthly",
     "payment": 59.99,
     "revus": 300,
+    "slug": "sol-y-mar",
     "date": "2026-05-05"
   }
 ]
