@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Revu</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Overlay -->
+    <div id="login-overlay" class="overlay">
+        <div class="login-card">
+            <div class="logo">revu</div>
+            <h2>Acceso Privado</h2>
+            <p>Introduce la contraseña para acceder al dashboard.</p>
+            <form id="login-form">
+                <input type="password" id="password" placeholder="Contraseña" required>
+                <button type="submit" class="btn btn-primary">Entrar</button>
+                <p id="login-error" class="error-message"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div id="dashboard-content" class="container hidden">
+        <header>
+            <div class="logo">revu</div>
+            <div class="header-actions">
+                <span class="user-info">Admin</span>
+                <button id="logout-btn" class="btn btn-secondary btn-sm">Bloquear</button>
+            </div>
+        </header>
+
+        <main>
+            <h1>Dashboard de Clientes</h1>
+            
+            <!-- Metrics Summary -->
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <h3>Ingresos Totales</h3>
+                    <p id="total-revenue">0,00€</p>
+                    <span class="metric-sub">Facturación total</span>
+                </div>
+                <div class="metric-card">
+                    <h3>Costes de Producción</h3>
+                    <p id="total-costs">0,00€</p>
+                    <span class="metric-sub">0.27€ por Revu</span>
+                </div>
+                <div class="metric-card highlight">
+                    <h3>Beneficio Neto</h3>
+                    <p id="total-profit">0,00€</p>
+                    <span class="metric-sub">Ingresos - Costes</span>
+                </div>
+                <div class="metric-card">
+                    <h3>Total Revus</h3>
+                    <p id="total-revus">0</p>
+                    <span class="metric-sub">Entregados</span>
+                </div>
+            </div>
+
+            <!-- Add Client Form & Actions -->
+            <div class="section-card actions-container" style="margin-bottom: var(--spacing-xl);">
+                <div class="form-section">
+                    <h2>Añadir Cliente</h2>
+                    <form id="add-client-form" class="inline-form">
+                        <input type="text" id="client-name" placeholder="Nombre del cliente" required>
+                        <select id="client-type" required>
+                            <option value="monthly">Mensual</option>
+                            <option value="single">Pago Único</option>
+                        </select>
+                        <input type="number" id="client-payment" placeholder="Pago (€)" step="0.01" required>
+                        <input type="number" id="client-revus" placeholder="Cant. Revus" required>
+                        <button type="submit" class="btn btn-primary">Añadir</button>
+                    </form>
+                </div>
+                <div class="actions-section" style="margin-top: var(--spacing-md); display: flex; justify-content: flex-end;">
+                    <button id="download-json-btn" class="btn btn-secondary">Descargar JSON Actualizado</button>
+                </div>
+            </div>
+
+            <!-- Clients Table -->
+            <div class="section-card">
+                <h2>Listado de Clientes</h2>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Tipo</th>
+                                <th>Pago</th>
+                                <th>Cant. Revus</th>
+                                <th>Coste Prod.</th>
+                                <th>Beneficio</th>
+                                <th>Fecha</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clients-tbody">
+                            <!-- Rows will be inserted here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>

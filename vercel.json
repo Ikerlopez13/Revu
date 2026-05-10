@@ -1,6 +1,10 @@
 {
   "rewrites": [
     {
+      "source": "/dashboard",
+      "destination": "/dashboard/index.html"
+    },
+    {
       "source": "/configurador",
       "destination": "/configurador/index.html"
     },
