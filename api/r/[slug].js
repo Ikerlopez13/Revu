@@ -2,24 +2,26 @@ const PLACES = {
     "birres":     "ChIzEbxIjbykEjjDI5QKJ3q6",
     "b":          "ChIzEbxIjbykEjjDI5QKJ3q6",
     "b1":         "ChIzEbxIjbykEjjDI5QKJ3q6",
-    "samalica":   "ChJPxhhjPBa7EpPtKs-kE5do",
-    "s":          "ChJPxhhjPBa7EpPtKs-kE5do",
-    "s1":         "ChJPxhhjPBa7EpPtKs-kE5do",
-    "palomera":   "ChKtp3uPPBa7Ev9H8jsKuGrh",
-    "p":          "ChKtp3uPPBa7Ev9H8jsKuGrh",
-    "p1":         "ChKtp3uPPBa7Ev9H8jsKuGrh",
-    "caseta":     "ChL_V9XfNRe7EnfQT8V1gB9P",
-    "c":          "ChL_V9XfNRe7EnfQT8V1gB9P",
-    "c1":         "ChL_V9XfNRe7EnfQT8V1gB9P",
-    "amura":      "ChJ76Ub1HBa7Ei7DGsTfyB9N",
-    "a":          "ChJ76Ub1HBa7Ei7DGsTfyB9N",
-    "a1":         "ChJ76Ub1HBa7Ei7DGsTfyB9N",
-    "escora":     "ChLdRDnMFxe7ErlQvxrgCiY5",
-    "e":          "ChLdRDnMFxe7ErlQvxrgCiY5",
-    "e1":         "ChLdRDnMFxe7ErlQvxrgCiY5",
-    "hivernacle": "ChJn9M7DRxa7Er75lQaGR_EA",
-    "h":          "ChJn9M7DRxa7Er75lQaGR_EA",
-    "h1":         "ChJn9M7DRxa7Er75lQaGR_EA",
+    "b&b":        "ChIJMxG8Sl28pBIROMMjlAonero",
+    "samalica":   "ChIJT8YYYzwWuxIRk-0qz6QTl2g",
+    "s":          "ChIJT8YYYzwWuxIRk-0qz6QTl2g",
+    "s1":         "ChIJT8YYYzwWuxIRk-0qz6QTl2g",
+    "palomera":   "ChIJrad7jzwWuxIR_0fyOwq4auE",
+    "p":          "ChIJrad7jzwWuxIR_0fyOwq4auE",
+    "p1":         "ChIJrad7jzwWuxIR_0fyOwq4auE",
+    "caseta":     "ChIJ_1fV3zUXuxIRd9BPxXWAH08",
+    "c":          "ChIJ_1fV3zUXuxIRd9BPxXWAH08",
+    "c1":         "ChIJ_1fV3zUXuxIRd9BPxXWAH08",
+    "amura":      "ChIJe-lG9RwWuxIRLsMaxN_IH00",
+    "a":          "ChIJr-yi2sGVpBIR6Drh1ZzpjDg",
+    "a1":         "ChIJe-lG9RwWuxIRLsMaxN_IH00",
+    "ab":         "ChIJe-lG9RwWuxIRLsMaxN_IH00",
+    "escora":     "ChIJ3UQ5zBcXuxIRuVC_GuAKJjk",
+    "e":          "ChIJ3UQ5zBcXuxIRuVC_GuAKJjk",
+    "e1":         "ChIJ3UQ5zBcXuxIRuVC_GuAKJjk",
+    "hivernacle": "ChIJZ_TOw0cWuxIRvvmVBoZH8QA",
+    "h":          "ChIJZ_TOw0cWuxIRvvmVBoZH8QA",
+    "h1":         "ChIJZ_TOw0cWuxIRvvmVBoZH8QA",
     "taranna":    "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
     "t":          "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
     "tb1":        "ChIJ5dteDAYXuxIRbt4EJDKWgKg",
@@ -31,7 +33,8 @@ const PLACES = {
     "n1":         "ChIJZ6s2A9a-pBIRfkVZfhD4Yso",
     "amat":       "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
     "bellesa":    "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
-    "m":          "ChIJr-yi2sGvpBIR6Drh1ZzpjDg"
+    "m":          "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
+    "red":        "https://tryredcarpet.com"
 };
 
 // Load shortlink mappings (code -> place slug)
@@ -54,12 +57,17 @@ export default async function handler(req, res) {
   const incoming = req.query.slug || req.query[Object.keys(req.query)[0]];
   const shortlinks = await loadShortlinks();
   const resolvedSlug = shortlinks[incoming] || incoming; // if shortcode found, get actual slug
-  const placeId = PLACES[resolvedSlug];
+  const placeIdOrUrl = PLACES[resolvedSlug];
 
-  if (!placeId) {
+  if (!placeIdOrUrl) {
     return res.status(404).send("Place not found");
   }
 
-  const reviewUrl = `https://search.google.com/local/writereview?placeid=${placeId}`;
+  // Support full URLs
+  if (placeIdOrUrl.startsWith("http")) {
+    return res.redirect(302, placeIdOrUrl);
+  }
+
+  const reviewUrl = `https://search.google.com/local/writereview?placeid=${placeIdOrUrl}`;
   return res.redirect(302, reviewUrl);
 }

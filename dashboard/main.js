@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const payment = parseFloat(document.getElementById('client-payment').value);
         const revus = parseInt(document.getElementById('client-revus').value);
         const slug = document.getElementById('client-slug').value;
-        const date = new Date().toISOString().split('T')[0];
+        const date = document.getElementById('client-date').value;
 
         const newClient = {
             id: currentClients.length + 1,
@@ -122,8 +122,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 <td>${cost.toFixed(2)}€</td>
                 <td style="color: ${profit >= 0 ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">${profit.toFixed(2)}€</td>
                 <td>${client.date || 'N/A'}</td>
+                <td><button class="btn btn-secondary btn-sm delete-btn" data-id="${client.id}" style="background-color: var(--danger-color); color: white;">Borrar</button></td>
             `;
             tbody.appendChild(row);
+        });
+
+        // Add delete listeners
+        const deleteBtns = tbody.querySelectorAll('.delete-btn');
+        deleteBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(e.target.getAttribute('data-id'));
+                currentClients = currentClients.filter(c => c.id !== id);
+                renderData(currentClients);
+            });
         });
 
         const totalProfit = totalRevenue - totalCosts;
