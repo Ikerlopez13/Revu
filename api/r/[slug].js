@@ -34,7 +34,8 @@ const PLACES = {
     "amat":       "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
     "bellesa":    "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
     "m":          "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
-    "red":        "https://tryredcarpet.com"
+    "red":        "https://tryredcarpet.com",
+    "im10":       "https://g.page/r/CajoDPj7oDtwEBE/review"
 };
 
 // Load shortlink mappings (code -> place slug)
