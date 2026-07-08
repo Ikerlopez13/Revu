@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics | Revu</title>
+    <meta name="robots" content="noindex">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #f4f4f6;
+            color: #14161a;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .wrap { max-width: 860px; margin: 0 auto; padding: 24px 16px 60px; }
+        .brand { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+        .brand img { height: 28px; }
+        .brand span { font-size: 0.8rem; color: #8a8a93; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+        .head-card {
+            background: #fff; border: 1px solid #e7e9ee; border-radius: 24px;
+            padding: 28px 32px; margin-bottom: 20px;
+        }
+        .head-card h1 { font-size: clamp(1.4rem, 4vw, 2rem); font-weight: 900; letter-spacing: -0.02em; }
+        .head-card .sub { color: #5e6670; font-size: 0.9rem; margin-top: 4px; }
+        .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
+        .card {
+            background: #fff; border: 1px solid #e7e9ee; border-radius: 20px;
+            padding: 20px; text-align: center;
+        }
+        .card .num { font-size: 1.9rem; font-weight: 900; letter-spacing: -0.03em; }
+        .card .lbl { font-size: 0.75rem; color: #8a8a93; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+        .card .num.green { color: #16a34a; }
+        .section {
+            background: #fff; border: 1px solid #e7e9ee; border-radius: 24px;
+            padding: 24px 28px; margin-bottom: 20px;
+        }
+        .section h2 { font-size: 1.1rem; font-weight: 800; margin-bottom: 16px; }
+        .chart-box { position: relative; height: 260px; }
+        .empty { text-align: center; color: #8a8a93; padding: 30px 10px; font-size: 0.9rem; }
+        .error-box { background: #fff; border-radius: 24px; padding: 60px 20px; text-align: center; color: #5e6670; }
+        .footer { text-align: center; font-size: 0.75rem; color: #a5a5ad; margin-top: 30px; }
+        .footer a { color: #ef2b2d; text-decoration: none; font-weight: 700; }
+        @media (max-width: 560px) {
+            .cards { grid-template-columns: 1fr 1fr; }
+            .cards .card:first-child { grid-column: 1 / -1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="brand">
+            <img src="/assets/logo.svg" alt="Revu">
+            <span>Analytics</span>
+        </div>
+
+        <div id="content" style="display:none;">
+            <div class="head-card">
+                <h1 id="biz-name">—</h1>
+                <div class="sub">Estadísticas de tu Revu · <span id="biz-link"></span></div>
+            </div>
+
+            <div class="cards">
+                <div class="card"><div class="num" id="clicks-total">—</div><div class="lbl">Toques totales</div></div>
+                <div class="card"><div class="num" id="clicks-today">—</div><div class="lbl">Hoy</div></div>
+                <div class="card"><div class="num" id="clicks-week">—</div><div class="lbl">Últimos 7 días</div></div>
+            </div>
+
+            <div class="section">
+                <h2>📈 Toques en tu Revu por día</h2>
+                <div class="chart-box"><canvas id="clicks-chart"></canvas></div>
+                <div id="clicks-empty" class="empty" style="display:none;">Aún no hay toques registrados. ¡Coloca tu Revu a la vista y empezarán a llegar!</div>
+            </div>
+
+            <div class="cards" id="review-cards" style="display:none;">
+                <div class="card"><div class="num" id="reviews-now">—</div><div class="lbl">Reseñas en Google</div></div>
+                <div class="card"><div class="num green" id="reviews-delta">—</div><div class="lbl">Nuevas con Revu</div></div>
+                <div class="card"><div class="num" id="rating-now">—</div><div class="lbl">Nota media</div></div>
+            </div>
+
+            <div class="section">
+                <h2>⭐ Evolución de tus reseñas en Google</h2>
+                <div class="chart-box"><canvas id="reviews-chart"></canvas></div>
+                <div id="reviews-empty" class="empty" style="display:none;">La medición de reseñas empieza en cuanto activamos tu Revu. Vuelve mañana para ver la primera evolución.</div>
+            </div>
+
+            <div class="footer">Impulsado por <a href="https://revutags.com">Revu</a> — más reseñas con un toque.</div>
+        </div>
+
+        <div id="not-found" class="error-box" style="display:none;">
+            <h2 style="margin-bottom:8px;">Enlace no encontrado</h2>
+            <p>Comprueba la dirección o contacta con nosotros.</p>
+        </div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://mqlfptujypzofidvmjnb.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xbGZwdHVqeXB6b2ZpZHZtam5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMTI1NjksImV4cCI6MjA4NTc4ODU2OX0.mJvjuxTga1xx_TfwGnm0M9QfLFMLikjSP9Fw8DUBOD4';
+
+        // Negocio -> alias de enlaces + nombre a mostrar
+        const BUSINESSES = {
+            'birres':      { name: '1982 Birres & Burgers',        aliases: ['birres', 'b', 'b1', 'rev'] },
+            'b&b':         { name: '1982 Birres & Burgers',        aliases: ['b&b'] },
+            'samalica':    { name: 'Restaurant Sa Malica-Can Ton', aliases: ['samalica', 's', 's1', 'belleza'] },
+            'palomera':    { name: 'Racó Sa Palomera',             aliases: ['palomera', 'p', 'p1'] },
+            'caseta':      { name: 'La Caseta Blanes',             aliases: ['caseta', 'c', 'c1'] },
+            'amura':       { name: 'Amura Blanes',                 aliases: ['amura', 'a1', 'ab'] },
+            'amat':        { name: 'Àmat bellesa i wellness',      aliases: ['amat', 'bellesa', 'm', 'a'] },
+            'escora':      { name: "L'Escora - Restaurant",        aliases: ['escora', 'e', 'e1'] },
+            'hivernacle':  { name: "l'hivernacle Restaurant i Copes", aliases: ['hivernacle', 'h', 'h1', 'wellness'] },
+            'taranna':     { name: 'Taranna',                      aliases: ['taranna', 't', 'tb1'] },
+            'clandestin':  { name: 'Clandestin',                   aliases: ['clandestin', 'cl'] },
+            'nvareformes': { name: 'NVA Reformes',                 aliases: ['nvareformes', 'nva', 'n', 'n1'] },
+            'latropa':     { name: 'La Tropa',                     aliases: ['latropa', 'tropa', 'lt'] }
+        };
+
+        function resolveBusiness(slug) {
+            slug = (slug || '').toLowerCase();
+            if (BUSINESSES[slug]) return { key: slug, ...BUSINESSES[slug] };
+            for (const [key, b] of Object.entries(BUSINESSES)) {
+                if (b.aliases.includes(slug)) return { key, ...b };
+            }
+            return null;
+        }
+
+        async function sb(pathAndQuery) {
+            const r = await fetch(`${SUPABASE_URL}/rest/v1/${pathAndQuery}`, {
+                headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` }
+            });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+
+        async function main() {
+            const slug = location.pathname.split('/').filter(Boolean).pop();
+            const biz = slug === 'analytics' ? null : resolveBusiness(slug);
+            if (!biz) {
+                document.getElementById('not-found').style.display = 'block';
+                return;
+            }
+
+            document.getElementById('content').style.display = 'block';
+            document.getElementById('biz-name').textContent = biz.name;
+            document.getElementById('biz-link').textContent = 'revutags.com/' + slug;
+
+            // --- Clicks del negocio (todos sus alias) ---
+            try {
+                const inList = biz.aliases.map(a => `"${a}"`).join(',');
+                const clicks = await sb(`revu_clicks?select=slug,created_at&slug=in.(${encodeURIComponent(inList)})&order=created_at.asc&limit=10000`);
+
+                const now = new Date();
+                const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+                const startWeek = now.getTime() - 7 * 24 * 3600 * 1000;
+                let today = 0, week = 0;
+                const byDay = {};
+
+                clicks.forEach(c => {
+                    const d = new Date(c.created_at);
+                    const t = d.getTime();
+                    if (t >= startToday) today++;
+                    if (t >= startWeek) week++;
+                    const day = d.toISOString().slice(0, 10);
+                    byDay[day] = (byDay[day] || 0) + 1;
+                });
+
+                document.getElementById('clicks-total').textContent = clicks.length;
+                document.getElementById('clicks-today').textContent = today;
+                document.getElementById('clicks-week').textContent = week;
+
+                if (clicks.length === 0) {
+                    document.getElementById('clicks-empty').style.display = 'block';
+                } else {
+                    // últimos 30 días con ceros incluidos
+                    const labels = [], data = [];
+                    for (let i = 29; i >= 0; i--) {
+                        const d = new Date(now.getTime() - i * 24 * 3600 * 1000);
+                        const key = d.toISOString().slice(0, 10);
+                        labels.push(d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }));
+                        data.push(byDay[key] || 0);
+                    }
+                    new Chart(document.getElementById('clicks-chart'), {
+                        type: 'bar',
+                        data: { labels, datasets: [{ label: 'Toques', data, backgroundColor: '#ef2b2d', borderRadius: 6 }] },
+                        options: {
+                            responsive: true, maintainAspectRatio: false,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+                        }
+                    });
+                }
+            } catch (e) { console.error('clicks', e); }
+
+            // --- Evolución de reseñas ---
+            try {
+                const stats = await sb(`revu_review_stats?select=rating,review_count,captured_at&place_slug=eq.${encodeURIComponent(biz.key)}&order=captured_at.asc&limit=1000`);
+                if (stats.length === 0) {
+                    document.getElementById('reviews-empty').style.display = 'block';
+                    return;
+                }
+                const first = stats[0], last = stats[stats.length - 1];
+                document.getElementById('review-cards').style.display = 'grid';
+                document.getElementById('reviews-now').textContent = last.review_count ?? '—';
+                const delta = (last.review_count ?? 0) - (first.review_count ?? 0);
+                document.getElementById('reviews-delta').textContent = (delta >= 0 ? '+' : '') + delta;
+                document.getElementById('rating-now').textContent = (last.rating ?? '—') + ' ★';
+
+                new Chart(document.getElementById('reviews-chart'), {
+                    type: 'line',
+                    data: {
+                        labels: stats.map(s => new Date(s.captured_at).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })),
+                        datasets: [
+                            { label: 'Reseñas', data: stats.map(s => s.review_count), borderColor: '#14161a', backgroundColor: 'rgba(20,22,26,0.05)', fill: true, tension: 0.3, yAxisID: 'y' },
+                            { label: 'Nota', data: stats.map(s => s.rating), borderColor: '#facc15', borderDash: [6, 4], tension: 0.3, yAxisID: 'y1' }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            y: { position: 'left', ticks: { precision: 0 } },
+                            y1: { position: 'right', min: 1, max: 5, grid: { drawOnChartArea: false } }
+                        }
+                    }
+                });
+            } catch (e) { console.error('reviews', e); }
+        }
+
+        main();
+    </script>
+</body>
+</html>

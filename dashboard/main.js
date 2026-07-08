@@ -5,8 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginOverlay = document.getElementById('login-overlay');
     const dashboardContent = document.getElementById('dashboard-content');
     const logoutBtn = document.getElementById('logout-btn');
-    const addClientForm = document.getElementById('add-client-form');
-    const downloadJsonBtn = document.getElementById('download-json-btn');
 
     const COST_PER_REVU = 0.27;
     let currentClients = [];
@@ -28,40 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loginOverlay.classList.remove('hidden');
         dashboardContent.classList.add('hidden');
         passwordInput.value = '';
-    });
-
-    addClientForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        const name = document.getElementById('client-name').value;
-        const type = document.getElementById('client-type').value;
-        const payment = parseFloat(document.getElementById('client-payment').value);
-        const revus = parseInt(document.getElementById('client-revus').value);
-        const slug = document.getElementById('client-slug').value;
-        const date = document.getElementById('client-date').value;
-
-        const newClient = {
-            id: currentClients.length + 1,
-            name,
-            type,
-            payment,
-            revus,
-            slug,
-            date
-        };
-
-        currentClients.push(newClient);
-        renderData(currentClients);
-        addClientForm.reset();
-    });
-
-    downloadJsonBtn.addEventListener('click', () => {
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentClients, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href",     dataStr);
-        downloadAnchor.setAttribute("download", "clients.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
     });
 
     async function attemptLogin(password) {
@@ -92,7 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showDashboard() {
         loginOverlay.classList.add('hidden');
         dashboardContent.classList.remove('hidden');
-        renderData(currentClients);
         loadStats();
         loadReviewStats();
     }
@@ -252,62 +215,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function renderData(clients) {
-        const tbody = document.getElementById('clients-tbody');
-        tbody.innerHTML = '';
-
-        let totalRevenue = 0;
-        let totalCosts = 0;
-        let totalRevus = 0;
-
-        clients.forEach(client => {
-            const revenue = client.payment;
-            const cost = client.revus * COST_PER_REVU;
-            const profit = revenue - cost;
-
-            totalRevenue += revenue;
-            totalCosts += cost;
-            totalRevus += client.revus;
-
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${client.name}</td>
-                <td><a href="https://revutags.com/${client.slug || ''}" target="_blank">/${client.slug || ''}</a></td>
-                <td><span class="badge badge-${client.type}">${client.type === 'monthly' ? 'Mensual' : 'Pago Único'}</span></td>
-                <td>${revenue.toFixed(2)}€</td>
-                <td>${client.revus}</td>
-                <td>${cost.toFixed(2)}€</td>
-                <td style="color: ${profit >= 0 ? 'var(--success-color)' : 'var(--danger-color)'}; font-weight: 600;">${profit.toFixed(2)}€</td>
-                <td>${client.date || 'N/A'}</td>
-                <td><button class="btn btn-secondary btn-sm delete-btn" data-id="${client.id}" style="background-color: var(--danger-color); color: white;">Borrar</button></td>
-            `;
-            tbody.appendChild(row);
-        });
-
-        // Add delete listeners
-        const deleteBtns = tbody.querySelectorAll('.delete-btn');
-        deleteBtns.forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = parseInt(e.target.getAttribute('data-id'));
-                currentClients = currentClients.filter(c => c.id !== id);
-                renderData(currentClients);
-            });
-        });
-
-        const totalProfit = totalRevenue - totalCosts;
-
-        // Update summary cards
-        document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}€`;
-        document.getElementById('total-costs').textContent = `${totalCosts.toFixed(2)}€`;
-        document.getElementById('total-profit').textContent = `${totalProfit.toFixed(2)}€`;
-        document.getElementById('total-revus').textContent = totalRevus;
-        
-        // Style profit card
-        const profitCard = document.querySelector('.metric-card.highlight');
-        if (totalProfit >= 0) {
-            profitCard.style.background = 'var(--accent-color)';
-        } else {
-            profitCard.style.background = 'var(--danger-color)';
-        }
-    }
 });

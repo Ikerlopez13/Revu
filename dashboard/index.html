@@ -34,7 +34,7 @@
         </header>
 
         <main>
-            <h1>Dashboard de Clientes</h1>
+            <h1>Estadísticas Revu</h1>
 
             <!-- Estadísticas de enlaces (clicks NFC/QR) -->
             <div class="section-card" style="margin-bottom: var(--spacing-xl);">
@@ -92,76 +92,6 @@
                 </p>
             </div>
 
-            <!-- Metrics Summary -->
-            <div class="metrics-grid">
-                <div class="metric-card">
-                    <h3>Ingresos Totales</h3>
-                    <p id="total-revenue">0,00€</p>
-                    <span class="metric-sub">Facturación total</span>
-                </div>
-                <div class="metric-card">
-                    <h3>Costes de Producción</h3>
-                    <p id="total-costs">0,00€</p>
-                    <span class="metric-sub">0.27€ por Revu</span>
-                </div>
-                <div class="metric-card highlight">
-                    <h3>Beneficio Neto</h3>
-                    <p id="total-profit">0,00€</p>
-                    <span class="metric-sub">Ingresos - Costes</span>
-                </div>
-                <div class="metric-card">
-                    <h3>Total Revus</h3>
-                    <p id="total-revus">0</p>
-                    <span class="metric-sub">Entregados</span>
-                </div>
-            </div>
-
-            <!-- Add Client Form & Actions -->
-            <div class="section-card actions-container" style="margin-bottom: var(--spacing-xl);">
-                <div class="form-section">
-                    <h2>Añadir Cliente</h2>
-                    <form id="add-client-form" class="inline-form">
-                        <input type="text" id="client-name" placeholder="Nombre del cliente" required>
-                        <select id="client-type" required>
-                            <option value="monthly">Mensual</option>
-                            <option value="single">Pago Único</option>
-                        </select>
-                        <input type="number" id="client-payment" placeholder="Pago (€)" step="0.01" required>
-                        <input type="number" id="client-revus" placeholder="Cant. Revus" required>
-                        <input type="text" id="client-slug" placeholder="Slug / Enlace" required>
-                        <input type="date" id="client-date" required>
-                        <button type="submit" class="btn btn-primary">Añadir</button>
-                    </form>
-                </div>
-                <div class="actions-section" style="margin-top: var(--spacing-md); display: flex; justify-content: flex-end;">
-                    <button id="download-json-btn" class="btn btn-secondary">Descargar JSON Actualizado</button>
-                </div>
-            </div>
-
-            <!-- Clients Table -->
-            <div class="section-card">
-                <h2>Listado de Clientes</h2>
-                <div class="table-responsive">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Enlace</th>
-                                <th>Tipo</th>
-                                <th>Pago</th>
-                                <th>Cant. Revus</th>
-                                <th>Coste Prod.</th>
-                                <th>Beneficio</th>
-                                <th>Fecha</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="clients-tbody">
-                            <!-- Rows will be inserted here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </main>
     </div>
 
