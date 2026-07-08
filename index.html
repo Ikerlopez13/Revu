@@ -4,19 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Revu | Consigue más reseñas en Google con un toque NFC</title>
+    <title>Revu | Multiplica las reseñas en Google de tu negocio</title>
     <meta name="description"
-        content="Aumenta tus reseñas en Google Maps de forma instantánea. Revu es el dispositivo NFC físico para que tus clientes dejen su valoración sin fricción.">
+        content="Consigue más reseñas en Google con el dispositivo NFC de Revu. Tus clientes dejan su valoración en 5 segundos acercando el móvil. Pago único, sin suscripciones.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+
+    <!-- Announcement bar -->
+    <div class="announcement-bar">
+        🚚 Envío gratis · Entrega en 48h en toda España peninsular
+    </div>
 
     <header>
         <div class="container">
@@ -24,154 +29,324 @@
                 <img src="assets/logo.svg" alt="Revu Logo" style="height: 32px; width: auto;">
             </a>
             <nav>
-                <a href="#faq" class="nav-link" style="font-weight: 500;">Cómo funciona</a>
+                <a href="#como-funciona" class="nav-link">Cómo funciona</a>
+                <a href="#planes" class="nav-link">Planes</a>
                 <a href="https://wa.me/34675977794" class="btn btn-primary">Pedir mi Revu</a>
             </nav>
         </div>
     </header>
 
     <main>
-        <!-- Free Shipping Banner -->
-        <div style="background: linear-gradient(90deg, #EA4335 0%, #FBBC04 50%, #4285F4 100%); color: white; text-align: center; padding: 12px; font-weight: 600; font-size: 0.95rem; margin-top: 72px;">
-            📦 ENVÍO GRATIS A TODA ESPAÑA • LLEGA EN 48H
-        </div>
 
-        <!-- Hero Section -->
-        <section class="container hero" style="padding-top: 60px; padding-bottom: 60px; min-height: auto;">
-            <div class="hero-content reveal">
-                <div style="display: inline-block; background: var(--accent-primary); color: #000; padding: 10px 18px; border-radius: 25px; font-size: 0.85rem; font-weight: 700; margin-bottom: 20px; width: fit-content;">
-                    ⭐ PRODUCTO PREMIUM
+        <!-- ===== HERO: ficha de producto ===== -->
+        <section class="container product-hero">
+
+            <!-- Galería -->
+            <div class="product-gallery reveal">
+                <div class="gallery-main">
+                    <img src="assets/product_tag.png" alt="Tag NFC Revu — Tu opinión nos importa" class="gallery-media active">
                 </div>
-                <h1 style="font-size: 3.5rem; margin-bottom: 20px;">El definitivo para restaurantes ganadores</h1>
-                <p style="font-size: 1.2rem; margin-bottom: 30px; max-width: 500px;">Revu Premium: La solución NFC que transforma clientes en promotores de tu negocio. Resultados reales, sin fricción, sin esperas.
-                </p>
-                <div class="hero-buttons" style="display: flex; gap: 15px; margin-bottom: 40px;">
-                    <a href="https://wa.me/34675977794" class="btn btn-primary" style="padding: 15px 40px; font-size: 1.1rem;">
-                        🛒 Pedir ahora
+            </div>
+
+            <!-- Panel de producto -->
+            <div class="product-panel reveal">
+                <div class="rating-row">
+                    <span class="stars">★★★★★</span>
+                    <span class="rating-text">+1.000 negocios confían en Revu</span>
+                </div>
+
+                <h1>Multiplica las reseñas en Google de tu negocio</h1>
+                <p class="product-sub">Tus clientes dejan su reseña de 5 estrellas en segundos: acercan el móvil o
+                    escanean el QR y se abre directamente tu página de reseñas de Google.</p>
+
+                <ul class="check-list">
+                    <li><span class="check">✓</span> Pago único — sin suscripciones ni permanencia</li>
+                    <li><span class="check">✓</span> Consigue reseñas en 5 segundos</li>
+                    <li><span class="check">✓</span> Mejora tu posición en Google Maps</li>
+                    <li><span class="check">✓</span> Sin apps, sin baterías, sin configuración para el cliente</li>
+                </ul>
+
+                <div class="price-block">
+                    <div class="price">15€</div>
+                    <div class="price-meta">
+                        <span class="price-label">Pago único</span>
+                        <span class="price-shipping">Envío gratis 24/48h</span>
+                    </div>
+                </div>
+
+                <div class="cta-column">
+                    <a href="https://wa.me/34675977794" class="btn btn-primary btn-xl">
+                        <svg style="width: 22px; height: 22px; fill: currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                        Pedir mi Revu
                     </a>
                 </div>
-                <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                    <div style="display: flex; align-items: center; gap: 8px;">
-                        <span style="color: var(--accent-primary); font-size: 1.2rem;">★★★★★</span>
-                        <span style="color: var(--text-secondary);">4.9/5 • +1000 restaurantes</span>
+
+                <div class="trust-box">
+                    <div class="trust-item">
+                        <span class="trust-icon">🛡️</span>
+                        <div>
+                            <strong>Configurado por nosotros</strong>
+                            <p>Te lo enviamos listo: conectado a la ficha de Google de tu negocio.</p>
+                        </div>
+                    </div>
+                    <div class="trust-item">
+                        <span class="trust-icon">💬</span>
+                        <div>
+                            <strong>Soporte humano por WhatsApp</strong>
+                            <p>Te ayudamos con cualquier duda, antes y después de comprar.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="hero-image-container reveal" style="max-width: 500px;">
-                <img src="assets/promo_results.png" alt="Revu Premium - El dispositivo definitivo para restaurantes ganadores" style="width: 100%; height: auto; border-radius: 24px;">
+        </section>
+
+        <!-- ===== Banda de métricas ===== -->
+        <section class="metrics-band">
+            <div class="container metrics-grid">
+                <div class="metric reveal">
+                    <div class="metric-number">5 seg</div>
+                    <div class="metric-label">Es lo que tarda tu cliente en dejar una reseña</div>
+                </div>
+                <div class="metric reveal">
+                    <div class="metric-number">+1.000</div>
+                    <div class="metric-label">Negocios ya usan Revu cada día</div>
+                </div>
+                <div class="metric reveal">
+                    <div class="metric-number">83%</div>
+                    <div class="metric-label">De las personas mira reseñas antes de elegir un negocio</div>
+                </div>
             </div>
         </section>
 
-        <!-- Zig-Zag Narrative -->
+        <!-- ===== Demo en vídeo ===== -->
+        <section class="container section-padding">
+            <div class="section-head reveal">
+                <h2>Míralo en acción</h2>
+                <p>Así de fácil es dejar una reseña con Revu: un toque y listo.</p>
+            </div>
+            <div class="demo-video-wrap reveal">
+                <video autoplay muted loop playsinline preload="metadata" class="demo-video">
+                    <source src="assets/demo.mp4" type="video/mp4">
+                    Tu navegador no soporta el vídeo.
+                </video>
+            </div>
+        </section>
+
+        <!-- ===== Cómo funciona ===== -->
         <section id="como-funciona" class="container section-padding">
-
-            <!-- Row 3 -->
-            <div class="feature-row reveal">
-                <div class="feature-image">
-                    <img src="assets/promo_results.png" alt="Revu Premium - El dispositivo definitivo para restaurantes ganadores">
+            <div class="section-head reveal">
+                <h2>¿Cómo funciona?</h2>
+                <p>Sin apps, sin baterías, sin fricción. Solo un toque.</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card reveal">
+                    <div class="step-number">1</div>
+                    <h3>Tu cliente acerca el móvil</h3>
+                    <p>Gracias al chip NFC de alto rendimiento, al acercar el teléfono se abre automáticamente la
+                        página de reseñas de tu negocio en Google. También puede escanear el QR.</p>
                 </div>
-                <div class="feature-text">
-                    <h2>Revu Premium: Tu ventaja definitiva.</h2>
-                    <p>Diseñado para restaurantes que no se conforman. Nuestro producto premium maximiza cada interacción con el cliente, transformando visitantes ocasionales en promotores de tu negocio. Resultados reales, no promesas.</p>
+                <div class="step-card reveal">
+                    <div class="step-number">2</div>
+                    <h3>Deja su reseña de 5 estrellas</h3>
+                    <p>Sin descargar nada y sin buscar tu negocio: aterriza directamente en el formulario de
+                        valoración. Funciona en iPhone y Android de forma nativa.</p>
+                </div>
+                <div class="step-card reveal">
+                    <div class="step-number">3</div>
+                    <h3>Subes posiciones en Google Maps</h3>
+                    <p>Más reseñas recientes significan mejor posicionamiento local. Apareces antes que tu
+                        competencia y atraes a más clientes.</p>
                 </div>
             </div>
         </section>
 
-        <!-- Key Features (Summary) -->
-        <section class="container section-padding"
-            style="background: var(--bg-secondary); border-radius: 48px; margin-bottom: var(--spacing-xl); padding: var(--spacing-lg);">
-            <div style="text-align: left; margin-bottom: var(--spacing-lg);">
-                <h2 style="font-size: 2.5rem;">Diseñado para el éxito.</h2>
-            </div>
-            <div class="features-grid">
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                    </div>
-                    <h3>Sin Baterías</h3>
-                    <p>Tecnología NFC pasiva. No necesita carga ni cables; funciona para siempre.</p>
+        <!-- ===== Listo en minutos ===== -->
+        <section class="quick-setup">
+            <div class="container">
+                <div class="section-head reveal">
+                    <h2>Tu Revu llega listo para funcionar</h2>
+                    <p>Cero configuración por tu parte. Nosotros lo dejamos todo conectado.</p>
                 </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                <div class="setup-grid">
+                    <div class="setup-step reveal">
+                        <span class="setup-icon">📲</span>
+                        <h4>1. Pídelo por WhatsApp</h4>
+                        <p>Dinos el nombre de tu negocio tal y como aparece en Google Maps.</p>
                     </div>
-                    <h3>Sin Apps</h3>
-                    <p>El cliente no tiene que instalar nada. Funciona nativamente en iOS y Android.</p>
-                </div>
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <div class="setup-step reveal">
+                        <span class="setup-icon">🔗</span>
+                        <h4>2. Lo conectamos por ti</h4>
+                        <p>Vinculamos el NFC y el QR directamente a tu página de reseñas de Google.</p>
                     </div>
-                    <h3>Resistente</h3>
-                    <p>Materiales de alta durabilidad diseñados para aguantar el trote de cualquier mostrador.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section id="faq" class="container section-padding">
-            <div class="faq-section reveal">
-                <div style="text-align: left; margin-bottom: var(--spacing-lg);">
-                    <h2 style="font-size: 3rem;">Preguntas Frecuentes</h2>
-                    <p style="color: var(--text-secondary);">Todo lo que necesitas saber sobre Revu.</p>
-                </div>
-
-                <div class="faq-list">
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            ¿Cuánto cuesta un solo dispositivo?
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Un solo dispositivo tiene un coste de <strong>40€ (pago único)</strong>. No hay cuotas mensuales, comisiones ni permanencia. El envío es gratuito y lo recibes en 48 horas.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            ¿Tenéis un plan para instalarlo en todo mi restaurante?
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>¡Sí! Tenemos un plan de renting diseñado para locales que necesitan múltiples puntos de contacto. El coste es de <strong>25€ fijos al mes + 4€ por cada dispositivo</strong>. Este modelo incluye mantenimiento integral, actualizaciones de software y reposición inmediata si algún dispositivo se daña.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            ¿Qué resultados puedo esperar de este dispositivo?
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Revu elimina la fricción en el proceso de dejar una reseña. Al facilitar tanto el paso, verás un <strong>incremento inmediato en el volumen de valoraciones</strong>. Esto mejora directamente tu SEO local en Google Maps, haciendo que aparezcas antes que tu competencia cuando alguien busque un sitio para comer o cenar.</p>
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <button class="faq-question">
-                            ¿Es compatible con todos los teléfonos?
-                            <span class="faq-icon"></span>
-                        </button>
-                        <div class="faq-answer">
-                            <p>Sí, funciona con el 99% de los smartphones actuales (iPhone y Android). Utiliza tecnología NFC pasiva, la misma que usas para pagar con el móvil, por lo que tus clientes no tienen que descargar ninguna aplicación ni activar nada especial.</p>
-                        </div>
+                    <div class="setup-step reveal">
+                        <span class="setup-icon">⭐</span>
+                        <h4>3. Colócalo y a recibir reseñas</h4>
+                        <p>En el mostrador, en las mesas o junto a la caja. Empieza a funcionar desde el primer día.</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Final CTA -->
-        <section id="comprar" class="container section-padding" style="text-align: left;">
-            <div style="background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(251, 188, 4, 0.05) 100%); padding: var(--spacing-xl) var(--spacing-md); border-radius: 40px; border: 1px solid rgba(251, 188, 4, 0.2);">
-                <h2 style="font-size: 3rem; margin-bottom: 20px; background: linear-gradient(135deg, var(--accent-primary) 0%, white 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Obtén tu Revu Premium hoy</h2>
-                <p style="color: var(--text-secondary); margin-bottom: var(--spacing-md); font-size: 1.1rem;">Desde solo <strong style="color: var(--accent-primary);">40€</strong> por dispositivo. Sin cuotas mensuales. Resultados garantizados.</p>
-                <div style="display: flex; justify-content: flex-start;">
-                    <a href="https://wa.me/34675977794" class="btn btn-primary" style="padding: 1.25rem 3rem; font-size: 1.1rem; display: flex; align-items: center; gap: 12px;">
+        <!-- ===== Por qué reseñas ===== -->
+        <section class="why-reviews">
+            <div class="container why-grid">
+                <div class="why-text reveal">
+                    <h2>¿Por qué necesito más reseñas?</h2>
+                    <p class="why-big">El <strong>83%</strong> de las personas mira las reseñas antes de decidir a qué
+                        negocio ir.</p>
+                    <p>Google posiciona mejor a los negocios con más reseñas recientes y mejor valoradas. Cada reseña
+                        nueva es un empujón para aparecer el primero cuando alguien busca "restaurante cerca de mí" —
+                        y cada posición que subes son clientes que entran por tu puerta y no por la de tu
+                        competencia.</p>
+                    <a href="https://wa.me/34675977794" class="btn btn-primary">Quiero más reseñas</a>
+                </div>
+                <div class="why-image reveal">
+                    <img src="assets/product_tag.png" alt="Tag NFC Revu — Tu opinión nos importa">
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Planes ===== -->
+        <section id="planes" class="container section-padding">
+            <div class="section-head reveal">
+                <h2>Elige tu plan</h2>
+                <p>Empieza con un dispositivo o equipa todo tu local.</p>
+            </div>
+            <div class="plans-grid">
+                <div class="plan-card reveal">
+                    <div class="plan-name">Individual</div>
+                    <div class="plan-price">15€ <span>pago único</span></div>
+                    <ul class="check-list">
+                        <li><span class="check">✓</span> 1 dispositivo Revu con NFC + QR</li>
+                        <li><span class="check">✓</span> Configurado con tu negocio</li>
+                        <li><span class="check">✓</span> Sin cuotas ni permanencia</li>
+                        <li><span class="check">✓</span> Envío gratis en 48h</li>
+                    </ul>
+                    <a href="https://wa.me/34675977794" class="btn btn-primary btn-block">Pedir mi Revu</a>
+                </div>
+                <div class="plan-card plan-featured reveal">
+                    <div class="plan-badge">Para locales completos</div>
+                    <div class="plan-name">Renting</div>
+                    <div class="plan-price">25€/mes <span>+ 4€ por dispositivo</span></div>
+                    <ul class="check-list">
+                        <li><span class="check">✓</span> Todos los dispositivos que necesites</li>
+                        <li><span class="check">✓</span> Mantenimiento integral incluido</li>
+                        <li><span class="check">✓</span> Reposición inmediata si se daña</li>
+                        <li><span class="check">✓</span> Actualizaciones de software</li>
+                    </ul>
+                    <a href="https://wa.me/34675977794" class="btn btn-primary btn-block">Hablar con nosotros</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== FAQ ===== -->
+        <section id="faq" class="faq-wrap">
+            <div class="container section-padding">
+                <div class="faq-section reveal">
+                    <div class="section-head">
+                        <h2>Preguntas frecuentes</h2>
+                        <p>Todo lo que necesitas saber sobre Revu.</p>
+                    </div>
+
+                    <div class="faq-list">
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ¿Cuánto cuesta un solo dispositivo?
+                                <span class="faq-icon"></span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Un solo dispositivo tiene un coste de <strong>15€ (pago único)</strong>. No hay cuotas mensuales, comisiones ni permanencia. El envío es gratuito y lo recibes en 48 horas.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ¿Tenéis un plan para instalarlo en todo mi restaurante?
+                                <span class="faq-icon"></span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>¡Sí! Tenemos un plan de renting diseñado para locales que necesitan múltiples puntos de contacto. El coste es de <strong>25€ fijos al mes + 4€ por cada dispositivo</strong>. Este modelo incluye mantenimiento integral, actualizaciones de software y reposición inmediata si algún dispositivo se daña.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ¿Tengo que configurar algo yo?
+                                <span class="faq-icon"></span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>No. Nos dices el nombre de tu negocio en Google Maps y <strong>te lo enviamos ya conectado</strong> a tu página de reseñas. Lo sacas de la caja, lo colocas donde quieras y funciona. Si algún día cambias de negocio o de ficha de Google, te lo reconfiguramos sin coste.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ¿Qué resultados puedo esperar de este dispositivo?
+                                <span class="faq-icon"></span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Revu elimina la fricción en el proceso de dejar una reseña. Al facilitar tanto el paso, verás un <strong>incremento inmediato en el volumen de valoraciones</strong>. Esto mejora directamente tu SEO local en Google Maps, haciendo que aparezcas antes que tu competencia cuando alguien busque un sitio para comer o cenar.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ¿Es compatible con todos los teléfonos?
+                                <span class="faq-icon"></span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Sí, funciona con el 99% de los smartphones actuales (iPhone y Android). Utiliza tecnología NFC pasiva, la misma que usas para pagar con el móvil, por lo que tus clientes no tienen que descargar ninguna aplicación ni activar nada especial. Y para el resto, siempre está el QR.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ¿Realmente los clientes lo usarán?
+                                <span class="faq-icon"></span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>Sí. La mayoría de clientes satisfechos no dejan reseña porque el proceso es tedioso: buscar el negocio, encontrar el botón, escribir… Revu lo reduce a <strong>un gesto de 5 segundos en el momento exacto</strong> en que el cliente está contento — al pagar o al despedirse. Esa es la diferencia.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item">
+                            <button class="faq-question">
+                                ¿Necesita baterías o mantenimiento?
+                                <span class="faq-icon"></span>
+                            </button>
+                            <div class="faq-answer">
+                                <p>No. El chip NFC es <strong>pasivo</strong>: no lleva batería, no se carga y no se apaga nunca. Los materiales están pensados para aguantar el día a día de cualquier mostrador, barra o mesa.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== Soporte ===== -->
+        <section class="container section-padding">
+            <div class="support-card reveal">
+                <div>
+                    <h2>Atención al cliente humana</h2>
+                    <p>Sin bots ni tickets. Nuestro equipo te responde por WhatsApp y te ayuda con cualquier duda,
+                        antes y después de tu compra.</p>
+                </div>
+                <a href="https://wa.me/34675977794" class="btn btn-primary btn-xl">Contactar con nosotros</a>
+            </div>
+        </section>
+
+        <!-- ===== CTA final ===== -->
+        <section id="comprar" class="final-cta">
+            <div class="container">
+                <div class="final-cta-inner reveal">
+                    <h2>Impulsa tu visibilidad hoy.</h2>
+                    <p>Desde 15€, pago único. Configurado, enviado gratis y funcionando en 48 horas.</p>
+                    <a href="https://wa.me/34675977794" class="btn btn-primary btn-xl">
                         <svg style="width: 24px; height: 24px; fill: currentColor;" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
-                        Chatear en WhatsApp
+                        Pedir mi Revu
                     </a>
+                    <p class="final-note">Envío gratuito en 48h a toda España peninsular.</p>
                 </div>
-                <p style="margin-top: 20px; font-size: 0.9rem; color: var(--accent-primary);">📦 Envío gratis en 48h a toda España</p>
             </div>
         </section>
     </main>
@@ -192,14 +367,34 @@
         </div>
     </div>
 
-    <footer class="container">
-        <div class="logo" style="opacity: 0.5;">
-            <img src="assets/logo.svg" alt="Revu Logo" style="height: 20px; width: auto; filter: grayscale(1);">
+    <footer>
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <img src="assets/logo.svg" alt="Revu Logo" style="height: 24px; width: auto;">
+                <p>El dispositivo NFC que multiplica las reseñas en Google de tu negocio.</p>
+                <p class="footer-stat">+1.000 negocios usan Revu cada día</p>
+            </div>
+            <div class="footer-col">
+                <h5>Accesos directos</h5>
+                <a href="#">Inicio</a>
+                <a href="#como-funciona">Cómo funciona</a>
+                <a href="#planes">Planes</a>
+                <a href="/dashboard">Panel Revu</a>
+            </div>
+            <div class="footer-col">
+                <h5>Contacto</h5>
+                <a href="https://wa.me/34675977794">WhatsApp: 675 97 77 94</a>
+                <a href="tel:+34675977794">Llámanos</a>
+            </div>
+            <div class="footer-col">
+                <h5>Legal</h5>
+                <a href="#">Aviso legal</a>
+                <a href="#">Privacidad</a>
+                <a href="#">Términos y condiciones</a>
+            </div>
         </div>
-        <div>© 2026 Revu Tech S.L. Todos los derechos reservados.</div>
-        <div class="footer-legal" style="display: flex; gap: 20px;">
-            <a href="#">Privacidad</a>
-            <a href="#">Términos</a>
+        <div class="container footer-bottom">
+            <div>© 2026 Revu Tech S.L. Todos los derechos reservados.</div>
         </div>
     </footer>
 
