@@ -93,6 +93,61 @@ document.addEventListener('DOMContentLoaded', () => {
         loginOverlay.classList.add('hidden');
         dashboardContent.classList.remove('hidden');
         renderData(currentClients);
+        loadStats();
+    }
+
+    // ===== Estadísticas de clicks (Supabase) =====
+    const SUPABASE_URL = 'https://mqlfptujypzofidvmjnb.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xbGZwdHVqeXB6b2ZpZHZtam5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMTI1NjksImV4cCI6MjA4NTc4ODU2OX0.mJvjuxTga1xx_TfwGnm0M9QfLFMLikjSP9Fw8DUBOD4';
+
+    document.getElementById('refresh-stats-btn')?.addEventListener('click', loadStats);
+
+    async function loadStats() {
+        const tbody = document.getElementById('stats-tbody');
+        try {
+            const resp = await fetch(
+                `${SUPABASE_URL}/rest/v1/revu_clicks?select=slug,created_at&order=created_at.desc&limit=10000`,
+                { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+            );
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const clicks = await resp.json();
+
+            const now = new Date();
+            const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const startWeek = now.getTime() - 7 * 24 * 3600 * 1000;
+
+            let totToday = 0, totWeek = 0;
+            const bySlug = {};
+            clicks.forEach(c => {
+                const t = new Date(c.created_at).getTime();
+                const s = c.slug || '(desconocido)';
+                if (!bySlug[s]) bySlug[s] = { today: 0, week: 0, total: 0, last: t };
+                bySlug[s].total++;
+                if (t > bySlug[s].last) bySlug[s].last = t;
+                if (t >= startWeek) { bySlug[s].week++; totWeek++; }
+                if (t >= startToday) { bySlug[s].today++; totToday++; }
+            });
+
+            document.getElementById('clicks-today').textContent = totToday;
+            document.getElementById('clicks-week').textContent = totWeek;
+            document.getElementById('clicks-total').textContent = clicks.length;
+
+            const rows = Object.entries(bySlug).sort((a, b) => b[1].total - a[1].total);
+            if (rows.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; opacity:0.6;">Todavía no hay clicks registrados. En cuanto alguien use un enlace aparecerá aquí.</td></tr>';
+                return;
+            }
+            tbody.innerHTML = rows.map(([slug, st]) => `
+                <td><a href="https://revutags.com/${slug}" target="_blank">revutags.com/${slug}</a></td>
+                <td>${st.today}</td>
+                <td>${st.week}</td>
+                <td style="font-weight:700;">${st.total}</td>
+                <td>${new Date(st.last).toLocaleString('es-ES', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+            `).map(r => `<tr>${r}</tr>`).join('');
+        } catch (err) {
+            console.error('Error cargando estadísticas', err);
+            if (tbody) tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#e5484d;">Error al cargar las estadísticas.</td></tr>';
+        }
     }
 
     function renderData(clients) {

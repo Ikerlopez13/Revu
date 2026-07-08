@@ -34,7 +34,48 @@
 
         <main>
             <h1>Dashboard de Clientes</h1>
-            
+
+            <!-- Estadísticas de enlaces (clicks NFC/QR) -->
+            <div class="section-card" style="margin-bottom: var(--spacing-xl);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h2>📈 Clicks por enlace</h2>
+                    <button id="refresh-stats-btn" class="btn btn-secondary btn-sm">Actualizar</button>
+                </div>
+                <div class="metrics-grid" style="margin: 16px 0;">
+                    <div class="metric-card">
+                        <h3>Clicks hoy</h3>
+                        <p id="clicks-today">—</p>
+                        <span class="metric-sub">Desde las 00:00</span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Últimos 7 días</h3>
+                        <p id="clicks-week">—</p>
+                        <span class="metric-sub">Total semanal</span>
+                    </div>
+                    <div class="metric-card">
+                        <h3>Total histórico</h3>
+                        <p id="clicks-total">—</p>
+                        <span class="metric-sub">Desde el inicio del registro</span>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Dirección</th>
+                                <th>Hoy</th>
+                                <th>7 días</th>
+                                <th>Total</th>
+                                <th>Último click</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stats-tbody">
+                            <tr><td colspan="5" style="text-align:center; opacity:0.6;">Cargando estadísticas…</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Metrics Summary -->
             <div class="metrics-grid">
                 <div class="metric-card">

@@ -56,12 +56,44 @@ async function loadShortlinks() {
   }
 }
 
+// --- Registro de clicks en Supabase (para el dashboard de estadísticas) ---
+const SUPABASE_URL = "https://mqlfptujypzofidvmjnb.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1xbGZwdHVqeXB6b2ZpZHZtam5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMTI1NjksImV4cCI6MjA4NTc4ODU2OX0.mJvjuxTga1xx_TfwGnm0M9QfLFMLikjSP9Fw8DUBOD4";
+
+async function logClick(slug, resolvedSlug, req) {
+  try {
+    await Promise.race([
+      fetch(`${SUPABASE_URL}/rest/v1/revu_clicks`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_ANON_KEY,
+          "Authorization": `Bearer ${SUPABASE_ANON_KEY}`,
+          "Prefer": "return=minimal"
+        },
+        body: JSON.stringify({
+          slug: String(slug || ""),
+          resolved_slug: String(resolvedSlug || ""),
+          user_agent: String(req.headers["user-agent"] || "").slice(0, 300),
+          referer: String(req.headers["referer"] || "").slice(0, 300)
+        })
+      }),
+      new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 1500))
+    ]);
+  } catch (e) {
+    // El registro nunca debe bloquear ni romper la redirección
+    console.error("logClick fail:", e.message);
+  }
+}
+
 export default async function handler(req, res) {
   // Resolve slug or shortcode
   const incoming = req.query.slug || req.query[Object.keys(req.query)[0]];
   const shortlinks = await loadShortlinks();
   const resolvedSlug = shortlinks[incoming] || incoming; // if shortcode found, get actual slug
   const placeIdOrUrl = PLACES[resolvedSlug];
+
+  await logClick(incoming, resolvedSlug, req);
 
   if (!placeIdOrUrl) {
     return res.status(404).send("Place not found");
