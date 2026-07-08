@@ -94,6 +94,108 @@ document.addEventListener('DOMContentLoaded', () => {
         dashboardContent.classList.remove('hidden');
         renderData(currentClients);
         loadStats();
+        loadReviewStats();
+    }
+
+    // ===== Evolución de reseñas (snapshots diarios de Google Places) =====
+    let reviewChart = null;
+    let reviewData = {};   // slug -> [{t, rating, count, name}]
+
+    document.getElementById('review-business-select')?.addEventListener('change', (e) => {
+        renderReviewChart(e.target.value);
+    });
+
+    async function loadReviewStats() {
+        try {
+            const resp = await fetch(
+                `${SUPABASE_URL}/rest/v1/revu_review_stats?select=place_slug,business_name,rating,review_count,captured_at&order=captured_at.asc&limit=10000`,
+                { headers: { apikey: SUPABASE_ANON_KEY, Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+            );
+            if (!resp.ok) throw new Error('HTTP ' + resp.status);
+            const rows = await resp.json();
+
+            reviewData = {};
+            rows.forEach(r => {
+                if (!reviewData[r.place_slug]) reviewData[r.place_slug] = [];
+                reviewData[r.place_slug].push({
+                    t: new Date(r.captured_at),
+                    rating: r.rating,
+                    count: r.review_count,
+                    name: r.business_name || r.place_slug
+                });
+            });
+
+            const select = document.getElementById('review-business-select');
+            const slugs = Object.keys(reviewData).sort();
+            if (slugs.length === 0) {
+                document.getElementById('review-stats-empty').style.display = 'block';
+                document.getElementById('reviews-chart').style.display = 'none';
+                return;
+            }
+            select.innerHTML = slugs.map(s =>
+                `<option value="${s}">${reviewData[s][reviewData[s].length - 1].name}</option>`
+            ).join('');
+            renderReviewChart(slugs.includes('latropa') ? 'latropa' : slugs[0]);
+            if (slugs.includes('latropa')) select.value = 'latropa';
+        } catch (err) {
+            console.error('Error cargando evolución de reseñas', err);
+            document.getElementById('review-stats-empty').style.display = 'block';
+        }
+    }
+
+    function renderReviewChart(slug) {
+        const serie = reviewData[slug] || [];
+        if (serie.length === 0) return;
+
+        const first = serie[0];
+        const last = serie[serie.length - 1];
+        const deltaCount = (last.count ?? 0) - (first.count ?? 0);
+        const deltaRating = ((last.rating ?? 0) - (first.rating ?? 0)).toFixed(1);
+
+        document.getElementById('review-delta').innerHTML = `
+            <div><span style="font-size:1.6rem; font-weight:800;">${last.count ?? '—'}</span><br><span style="opacity:0.6; font-size:0.85rem;">reseñas ahora</span></div>
+            <div><span style="font-size:1.6rem; font-weight:800; color:${deltaCount >= 0 ? '#16a34a' : '#e5484d'};">${deltaCount >= 0 ? '+' : ''}${deltaCount}</span><br><span style="opacity:0.6; font-size:0.85rem;">desde el Revu (${first.t.toLocaleDateString('es-ES')})</span></div>
+            <div><span style="font-size:1.6rem; font-weight:800;">${last.rating ?? '—'} ★</span><br><span style="opacity:0.6; font-size:0.85rem;">nota actual (${deltaRating >= 0 ? '+' : ''}${deltaRating})</span></div>
+        `;
+
+        const labels = serie.map(p => p.t.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' }));
+        const ctx = document.getElementById('reviews-chart').getContext('2d');
+        if (reviewChart) reviewChart.destroy();
+        reviewChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [
+                    {
+                        label: 'Nº de reseñas',
+                        data: serie.map(p => p.count),
+                        borderColor: '#111',
+                        backgroundColor: 'rgba(17,17,17,0.06)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Nota media',
+                        data: serie.map(p => p.rating),
+                        borderColor: '#facc15',
+                        backgroundColor: 'transparent',
+                        borderDash: [6, 4],
+                        tension: 0.3,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    y: { position: 'left', title: { display: true, text: 'Reseñas' }, beginAtZero: false },
+                    y1: { position: 'right', min: 1, max: 5, title: { display: true, text: 'Nota' }, grid: { drawOnChartArea: false } }
+                }
+            }
+        });
     }
 
     // ===== Estadísticas de clicks (Supabase) =====

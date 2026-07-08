@@ -6,6 +6,7 @@
     <title>Dashboard | Revu</title>
     <link rel="stylesheet" href="/dashboard/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <!-- Login Overlay -->
@@ -74,6 +75,21 @@
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            <!-- Evolución de reseñas por negocio -->
+            <div class="section-card" style="margin-bottom: var(--spacing-xl);">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <h2>⭐ Evolución de reseñas</h2>
+                    <select id="review-business-select" style="padding: 8px 14px; border-radius: 10px; border: 1px solid #ccc; font-family: inherit;"></select>
+                </div>
+                <div id="review-delta" style="margin: 14px 0; display: flex; gap: 24px; flex-wrap: wrap;"></div>
+                <div style="position: relative; height: 320px;">
+                    <canvas id="reviews-chart"></canvas>
+                </div>
+                <p id="review-stats-empty" style="text-align:center; opacity:0.6; display:none; padding: 20px;">
+                    Todavía no hay mediciones. La primera foto se toma al activar el sistema y luego una al día automáticamente.
+                </p>
             </div>
 
             <!-- Metrics Summary -->
