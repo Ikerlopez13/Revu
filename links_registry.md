@@ -19,5 +19,6 @@ Este archivo sirve para llevar un registro de qué slugs/letras pertenecen a qu�
 | `amat`, `bellesa`, `m` | Àmat (Antiguo o secundario) | Place ID | `ChIJr-yi2sGvpBIR6Drh1ZzpjDg` |
 | `red` | Try Red Carpet | URL | `https://tryredcarpet.com` |
 | `im10` | Enlace im10 | URL | `https://g.page/r/CajoDPj7oDtwEBE/review` |
+| `latropa`, `tropa`, `lt` | La Tropa (hamburgueseria, BCN) | Place ID | `ChIJNSGl2du8pBIRL1_f559PmX4` |
 
 *Nota: El slug `a` se ha configurado como URL completa para dirigir a la búsqueda de reseñas de Amat, ya que el comercio está en venta y se requiere ese enlace específico.*

@@ -35,7 +35,10 @@ const PLACES = {
     "bellesa":    "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
     "m":          "ChIJr-yi2sGvpBIR6Drh1ZzpjDg",
     "red":        "https://tryredcarpet.com",
-    "im10":       "https://g.page/r/CajoDPj7oDtwEBE/review"
+    "im10":       "https://g.page/r/CajoDPj7oDtwEBE/review",
+    "latropa":    "ChIJNSGl2du8pBIRL1_f559PmX4",
+    "tropa":      "ChIJNSGl2du8pBIRL1_f559PmX4",
+    "lt":         "ChIJNSGl2du8pBIRL1_f559PmX4"
 };
 
 // Load shortlink mappings (code -> place slug)
