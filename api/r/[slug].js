@@ -38,7 +38,10 @@ const PLACES = {
     "im10":       "https://g.page/r/CajoDPj7oDtwEBE/review",
     "latropa":    "ChIJNSGl2du8pBIRL1_f559PmX4",
     "tropa":      "ChIJNSGl2du8pBIRL1_f559PmX4",
-    "lt":         "ChIJNSGl2du8pBIRL1_f559PmX4"
+    "lt":         "ChIJNSGl2du8pBIRL1_f559PmX4",
+    "kolchonia":  "ChIJP2v4Jda8pBIRURcvA44Gw1Q",
+    "k":          "ChIJP2v4Jda8pBIRURcvA44Gw1Q",
+    "k1":         "ChIJP2v4Jda8pBIRURcvA44Gw1Q"
 };
 
 // Load shortlink mappings (code -> place slug)
