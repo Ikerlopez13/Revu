@@ -61,7 +61,7 @@ export function renderStatusPage(kind: StatusKind, whatsappNumber: string, code?
 </head>
 <body>
 <main>
-  <img class="logo" src="/assets/logo.svg" alt="RevuTags">
+  <picture><source srcset="/assets/logo-dark.svg" media="(prefers-color-scheme: dark)"><img class="logo" src="/assets/logo.svg" alt="RevuTags"></picture>
   <div class="dot" aria-hidden="true">!</div>
   <h1>${escapeHtml(title)}</h1>
   <p>${escapeHtml(text)}</p>

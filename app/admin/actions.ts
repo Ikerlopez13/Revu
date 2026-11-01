@@ -1,0 +1,124 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { z } from "zod";
+import { runAdminAction, type ActionResult } from "@/lib/admin/action";
+import { createBatch } from "@/lib/admin/batches";
+import { createBusiness, setBusinessArchived, updateBusiness } from "@/lib/admin/businesses";
+import {
+  assignTagSchema,
+  businessInputSchema,
+  createBatchSchema,
+  relabelSchema,
+  searchSchema,
+  setStatusSchema,
+  unassignSchema,
+  updateBusinessSchema,
+  updateDestinationSchema,
+} from "@/lib/admin/schemas";
+import { assignTag, relabelTag, setTagStatus, unassignTag, updateDestination, type MutationResult } from "@/lib/admin/tags";
+import { requireAdmin } from "@/lib/auth/session";
+import { searchBusinesses } from "@/lib/db/queries/admin";
+import { searchPlaces, type PlaceResult } from "@/lib/places";
+
+const deps = { requireAdmin };
+
+function afterTagChange(r: MutationResult) {
+  revalidatePath(`/admin/tags/${r.code}`);
+  revalidatePath("/admin/tags");
+  return r;
+}
+
+// ---------- Tags ----------
+
+export async function assignTagAction(raw: unknown) {
+  return runAdminAction(deps, assignTagSchema, raw, async (input, actor) => afterTagChange(await assignTag(actor, input)));
+}
+
+export async function updateDestinationAction(raw: unknown) {
+  return runAdminAction(deps, updateDestinationSchema, raw, async (input, actor) =>
+    afterTagChange(await updateDestination(actor, input)),
+  );
+}
+
+export async function setTagStatusAction(raw: unknown) {
+  return runAdminAction(deps, setStatusSchema, raw, async (input, actor) => afterTagChange(await setTagStatus(actor, input)));
+}
+
+export async function relabelTagAction(raw: unknown) {
+  return runAdminAction(deps, relabelSchema, raw, async (input, actor) => afterTagChange(await relabelTag(actor, input)));
+}
+
+export async function unassignTagAction(raw: unknown) {
+  return runAdminAction(deps, unassignSchema, raw, async (input, actor) => afterTagChange(await unassignTag(actor, input)));
+}
+
+// ---------- Búsqueda (asignación rápida) ----------
+
+export type BusinessSearchResult = {
+  existing: { id: string; name: string; slug: string }[];
+  places: PlaceResult[];
+  placesError?: string;
+};
+
+export async function searchBusinessAction(raw: unknown): Promise<ActionResult<BusinessSearchResult>> {
+  return runAdminAction(deps, searchSchema, raw, async (q) => {
+    const [existing, places] = await Promise.all([
+      searchBusinesses(q),
+      searchPlaces(q).then(
+        (p) => ({ ok: true as const, p }),
+        () => ({ ok: false as const, p: [] as PlaceResult[] }),
+      ),
+    ]);
+    const known = new Set(existing.map((b) => b.googlePlaceId));
+    return {
+      existing: existing.map(({ id, name, slug }) => ({ id, name, slug })),
+      // Una ficha que ya es negocio solo aparece una vez, como existente.
+      places: places.p.filter((p) => !known.has(p.placeId)),
+      placesError: places.ok ? undefined : "No se pudo buscar en Google",
+    };
+  });
+}
+
+// ---------- Lotes ----------
+
+export async function createBatchAction(raw: unknown) {
+  const result = await runAdminAction(deps, createBatchSchema, raw, async (input) => {
+    const batch = await createBatch(input);
+    revalidatePath("/admin/batches");
+    return { id: batch.id };
+  });
+  if (result.ok && result.data) redirect(`/admin/batches/${result.data.id}`);
+  return result;
+}
+
+// ---------- Negocios ----------
+
+export async function createBusinessAction(raw: unknown) {
+  const result = await runAdminAction(deps, businessInputSchema, raw, async (input) => {
+    const b = await createBusiness(input);
+    revalidatePath("/admin/businesses");
+    return { id: b.id };
+  });
+  if (result.ok && result.data) redirect(`/admin/businesses/${result.data.id}`);
+  return result;
+}
+
+export async function updateBusinessAction(raw: unknown) {
+  return runAdminAction(deps, updateBusinessSchema, raw, async (input) => {
+    const b = await updateBusiness(input);
+    revalidatePath(`/admin/businesses/${b.id}`);
+    revalidatePath("/admin/businesses");
+    return { id: b.id };
+  });
+}
+
+export async function archiveBusinessAction(raw: unknown) {
+  const schema = z.object({ id: z.string().uuid(), archived: z.enum(["true", "false"]).transform((v) => v === "true") });
+  return runAdminAction(deps, schema, raw, async (input) => {
+    await setBusinessArchived(input.id, input.archived);
+    revalidatePath(`/admin/businesses/${input.id}`);
+    revalidatePath("/admin/businesses");
+  });
+}

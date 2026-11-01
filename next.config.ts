@@ -1,7 +1,11 @@
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Hay otro package-lock.json en el home: fijamos la raíz del proyecto.
+  outputFileTracingRoot: dirname(fileURLToPath(import.meta.url)),
   async rewrites() {
     return {
       // El sitio estático (landing, configurador, analytics) vive en /public.

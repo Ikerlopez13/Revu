@@ -8,7 +8,9 @@ export interface TagCache {
   set(key: LookupKey, value: Cached): Promise<void>;
 }
 
-const TTL_SECONDS = 60 * 60 * 24 * 7; // red de seguridad: las ediciones escriben la clave al momento
+// Red de seguridad: las ediciones escriben la clave al momento. Si Redis falla
+// justo en una edición, el valor viejo caduca como mucho en un día.
+const TTL_SECONDS = 60 * 60 * 24;
 const NOT_FOUND_TTL_SECONDS = 60;
 const TIMEOUT_MS = 150;
 

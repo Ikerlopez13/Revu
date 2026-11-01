@@ -7,6 +7,7 @@ import {
   jsonb,
   numeric,
   pgSchema,
+  primaryKey,
   text,
   timestamp,
   uuid,
@@ -148,9 +149,60 @@ export const reviewSnapshots = revu.table(
   (t) => [index("review_snapshots_business_time_idx").on(t.businessId, t.capturedAt)],
 );
 
+// --- Auth.js (adaptador de Drizzle). Sesión JWT: auth_sessions queda sin uso,
+// pero el adaptador la necesita. auth_verification_tokens guarda los magic links.
+export const authUsers = revu.table("auth_users", {
+  id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
+  name: text("name"),
+  email: text("email").unique(),
+  emailVerified: timestamp("email_verified", { withTimezone: true, mode: "date" }),
+  image: text("image"),
+});
+
+export const authAccounts = revu.table(
+  "auth_accounts",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => authUsers.id, { onDelete: "cascade" }),
+    type: text("type").$type<"oauth" | "oidc" | "email" | "webauthn">().notNull(),
+    provider: text("provider").notNull(),
+    providerAccountId: text("provider_account_id").notNull(),
+    refresh_token: text("refresh_token"),
+    access_token: text("access_token"),
+    expires_at: integer("expires_at"),
+    token_type: text("token_type"),
+    scope: text("scope"),
+    id_token: text("id_token"),
+    session_state: text("session_state"),
+  },
+  (t) => [primaryKey({ columns: [t.provider, t.providerAccountId] })],
+);
+
+export const authSessions = revu.table("auth_sessions", {
+  sessionToken: text("session_token").primaryKey(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => authUsers.id, { onDelete: "cascade" }),
+  expires: timestamp("expires", { withTimezone: true, mode: "date" }).notNull(),
+});
+
+export const authVerificationTokens = revu.table(
+  "auth_verification_tokens",
+  {
+    identifier: text("identifier").notNull(),
+    token: text("token").notNull(),
+    expires: timestamp("expires", { withTimezone: true, mode: "date" }).notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.identifier, t.token] })],
+);
+
 export type Business = typeof businesses.$inferSelect;
 export type Tag = typeof tags.$inferSelect;
 export type TagStatus = (typeof tagStatus.enumValues)[number];
 export type DestinationType = (typeof destinationType.enumValues)[number];
 export type ScanOs = (typeof scanOs.enumValues)[number];
 export type ScanVia = (typeof scanVia.enumValues)[number];
+export type Batch = typeof batches.$inferSelect;
+export type TagEvent = typeof tagEvents.$inferSelect;
+export type TagEventAction = (typeof tagEventAction.enumValues)[number];

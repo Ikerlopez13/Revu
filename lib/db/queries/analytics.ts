@@ -3,7 +3,8 @@ import { and, asc, eq, isNull, isNotNull, sql } from "drizzle-orm";
 import { db } from "../client";
 import { businesses, reviewSnapshots, scans, tagAliases, tags } from "../schema";
 
-const TZ = "Europe/Madrid";
+// Literal y no parámetro: Postgres exige que la expresión del GROUP BY sea idéntica.
+const TZ = sql.raw("'Europe/Madrid'");
 
 export type PublicAnalytics = {
   name: string;
