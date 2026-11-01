@@ -1,34 +1,3 @@
 {
-  "crons": [
-    {
-      "path": "/api/snapshot",
-      "schedule": "0 5 * * *"
-    }
-  ],
-  "rewrites": [
-    {
-      "source": "/dashboard",
-      "destination": "/dashboard/index.html"
-    },
-    {
-      "source": "/configurador",
-      "destination": "/configurador/index.html"
-    },
-    {
-      "source": "/analytics/:slug",
-      "destination": "/analytics/index.html"
-    },
-    {
-      "source": "/m",
-      "destination": "/api/r/[slug]?slug=m"
-    },
-    {
-      "source": "/m/:code",
-      "destination": "/api/r/[slug]?slug=:code"
-    },
-    {
-      "source": "/(birres|samalica|palomera|caseta|amura|escora|hivernacle|taranna|clandestin|nvareformes|amat|bellesa|b|s|p|c|a|e|h|t|cl|nva|n|n1|tb1|b1|s1|p1|c1|a1|e1|h1|b&b|ab|red|im10|latropa|tropa|lt|kolchonia|k|k1)",
-      "destination": "/api/r/[slug]?slug=$1"
-    }
-  ]
+  "crons": [{ "path": "/api/cron/snapshot", "schedule": "0 5 * * *" }]
 }
