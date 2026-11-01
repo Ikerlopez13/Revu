@@ -22,6 +22,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initial check
     revealOnScroll();
 
+    // Skeleton mientras cargan las imágenes
+    document.querySelectorAll('.product-img, .gallery-main, .why-image').forEach(box => {
+        box.classList.add('skeleton');
+        box.querySelectorAll('img').forEach(img => {
+            const done = () => box.classList.remove('skeleton');
+            if (img.complete && img.naturalWidth) {
+                done();
+            } else {
+                img.addEventListener('load', done);
+                img.addEventListener('error', done);
+            }
+        });
+    });
+
     // Smooth header appearance
     const header = document.querySelector('header');
     let lastScroll = 0;
