@@ -31,13 +31,16 @@ export default async function TagDetailPage({ params }: { params: Promise<{ code
     { tagId: tag.id, code: tag.code, businessId: tag.businessId, status: tag.status, destinationType: tag.destinationType, placeId: business?.googlePlaceId ?? null, destinationUrl: tag.destinationUrl },
     "other",
   );
-  const url = publicTagUrl(tag.code);
+  // Si tiene URL corta propia (p. ej. revutags.com/0001), esa es la que se graba.
+  const base = publicTagUrl("").replace(/\/t\/$/, "");
+  const url = aliases[0] ? `${base}/${aliases[0]}` : publicTagUrl(tag.code);
+  const otherUrls = [...aliases.slice(1).map((a) => `/${a}`), ...(aliases[0] ? [`/t/${tag.code}`] : [])];
 
   return (
     <>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-3">
-          <h1 className="font-mono text-3xl font-bold tracking-widest">{tag.code}</h1>
+          <h1 className="font-mono text-3xl font-bold tracking-widest">{aliases[0] ? `/${aliases[0]}` : tag.code}</h1>
           <StatusBadge status={tag.status} />
         </div>
         <p className="text-sm text-muted-foreground">
@@ -136,10 +139,10 @@ export default async function TagDetailPage({ params }: { params: Promise<{ code
       <Card>
         <CardHeader>
           <CardTitle>URL grabada</CardTitle>
-          {aliases.length > 0 && <CardDescription>También responde a: {aliases.map((a) => `/${a}`).join(", ")}</CardDescription>}
+          {otherUrls.length > 0 && <CardDescription>También responde a: {otherUrls.join(", ")}</CardDescription>}
         </CardHeader>
         <CardContent className="flex items-center gap-2">
-          <code className="min-w-0 flex-1 truncate rounded-md bg-muted px-2 py-2.5 text-sm">{url}</code>
+          <code className="min-w-0 flex-1 rounded-md bg-muted px-2 py-2.5 text-sm break-all">{url}</code>
           <CopyButton text={url} />
         </CardContent>
       </Card>
@@ -205,6 +208,7 @@ const FIELD_LABEL: Record<string, string> = {
   destinationType: "Tipo",
   destinationUrl: "URL",
   label: "Etiqueta",
+  slug: "URL corta",
 };
 
 function show(field: string, value: unknown, names: Map<string, string>): string {

@@ -40,6 +40,7 @@ export default async function AdminHome() {
 
       <div className="grid gap-2">
         {[
+          { href: "/admin/tags", icon: Nfc, title: "Nuevo tag", text: "Crea una URL corta (revutags.com/0001…) para grabar en un NFC" },
           { href: "/admin/batches", icon: Boxes, title: "Crear un lote", text: "Genera códigos y exporta las URLs para NFC Tools" },
           { href: "/admin/tags", icon: Tags, title: "Todos los tags", text: "Filtra por estado, negocio o lote" },
           { href: "/admin/businesses", icon: Store, title: "Negocios", text: "Fichas de Google y tags de cada cliente" },

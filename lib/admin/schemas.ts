@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { normalizeCode } from "@/lib/codes/generate";
 import { customUrlSchema } from "@/lib/redirect/url-safety";
+import { slugSchema } from "./slugs";
 
 const optionalText = (max: number) =>
   z
@@ -87,6 +88,8 @@ export const setStatusSchema = z.object({ code: codeSchema, status: z.enum(["act
 export const relabelSchema = z.object({ code: codeSchema, label: optionalText(60) });
 
 export const unassignSchema = z.object({ code: codeSchema });
+
+export const createTagSchema = z.object({ slug: slugSchema });
 
 export const searchSchema = z.string().trim().min(2).max(120);
 

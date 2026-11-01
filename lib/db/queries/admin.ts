@@ -102,6 +102,26 @@ export async function insertTagEvent(
   await tx.insert(tagEvents).values(ev);
 }
 
+export async function aliasExists(tx: Executor, alias: string): Promise<boolean> {
+  const [row] = await tx.select({ alias: tagAliases.alias }).from(tagAliases).where(eq(tagAliases.alias, alias)).limit(1);
+  return !!row;
+}
+
+export async function listNumericAliases(): Promise<string[]> {
+  const rows = await db().select({ alias: tagAliases.alias }).from(tagAliases).where(sql`${tagAliases.alias} ~ '^[0-9]+$'`);
+  return rows.map((r) => r.alias);
+}
+
+/** Tag suelto (sin lote) con el código dado; null si el código ya existía. */
+export async function insertLooseTag(tx: Executor, code: string): Promise<Tag | null> {
+  const [tag] = await tx.insert(tags).values({ code }).onConflictDoNothing({ target: tags.code }).returning();
+  return tag ?? null;
+}
+
+export async function insertAlias(tx: Executor, alias: string, tagId: string) {
+  await tx.insert(tagAliases).values({ alias, tagId });
+}
+
 /** Inserta los códigos que no existan; devuelve los que entraron. */
 export async function insertBatchTags(tx: Executor, batchId: string, codes: string[]): Promise<string[]> {
   if (!codes.length) return [];

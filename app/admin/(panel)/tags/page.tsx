@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { z } from "zod";
+import { NewTagForm } from "@/components/admin/new-tag-form";
 import { PageTitle } from "@/components/admin/shell";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { TagFilters } from "@/components/admin/tag-filters";
@@ -24,6 +25,7 @@ export default async function TagsPage({ searchParams }: { searchParams: Promise
   return (
     <>
       <PageTitle title="Tags" subtitle={`${rows.length}${rows.length === 200 ? "+" : ""} resultados`} />
+      <NewTagForm />
       <TagFilters businesses={businesses} batches={batches.map((b) => ({ id: b.id, name: b.name }))} />
       <ul className="divide-y overflow-hidden rounded-xl border bg-card">
         {rows.map((t) => (

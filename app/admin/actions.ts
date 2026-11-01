@@ -8,6 +8,7 @@ import { createBatch } from "@/lib/admin/batches";
 import { createBusiness, setBusinessArchived, updateBusiness } from "@/lib/admin/businesses";
 import {
   assignTagSchema,
+  createTagSchema,
   businessInputSchema,
   createBatchSchema,
   relabelSchema,
@@ -17,7 +18,7 @@ import {
   updateBusinessSchema,
   updateDestinationSchema,
 } from "@/lib/admin/schemas";
-import { assignTag, relabelTag, setTagStatus, unassignTag, updateDestination, type MutationResult } from "@/lib/admin/tags";
+import { assignTag, createTagWithSlug, relabelTag, setTagStatus, unassignTag, updateDestination, type MutationResult } from "@/lib/admin/tags";
 import { AdminError } from "@/lib/admin/errors";
 import { MIN_PASSWORD_LENGTH, hashPassword, verifyPassword } from "@/lib/auth/password";
 import { requireAdmin } from "@/lib/auth/session";
@@ -55,6 +56,16 @@ export async function relabelTagAction(raw: unknown) {
 
 export async function unassignTagAction(raw: unknown) {
   return runAdminAction(deps, unassignSchema, raw, async (input, actor) => afterTagChange(await unassignTag(actor, input)));
+}
+
+export async function createTagAction(raw: unknown) {
+  const result = await runAdminAction(deps, createTagSchema, raw, async (input, actor) => {
+    const r = await createTagWithSlug(actor, input);
+    revalidatePath("/admin/tags");
+    return r;
+  });
+  if (result.ok && result.data) redirect(`/admin/tags/${result.data.code}`);
+  return result;
 }
 
 // ---------- Búsqueda (asignación rápida) ----------

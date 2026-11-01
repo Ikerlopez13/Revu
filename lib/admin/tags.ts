@@ -1,7 +1,18 @@
 import "server-only";
 import { refreshTagCache } from "@/lib/cache/invalidate";
 import { db } from "@/lib/db/client";
-import { getBusinessTx, insertTagEvent, lockTagByCode, updateTag, type Executor, type TagPatch } from "@/lib/db/queries/admin";
+import {
+  aliasExists,
+  getBusinessTx,
+  insertAlias,
+  insertLooseTag,
+  insertTagEvent,
+  lockTagByCode,
+  updateTag,
+  type Executor,
+  type TagPatch,
+} from "@/lib/db/queries/admin";
+import { fillWithUniqueCodes } from "./batches";
 import type { Tag, TagEventAction } from "@/lib/db/schema";
 import { resolveBusinessChoice } from "./businesses";
 import { AdminError } from "./errors";
@@ -118,5 +129,24 @@ export function unassignTag(actor: string, input: { code: string }) {
       action: "unassign",
       patch: { businessId: null, status: "unassigned", destinationType: "google_review", destinationUrl: null, label: null },
     };
+  });
+}
+
+/**
+ * Tag nuevo con URL corta propia (revutags.com/{slug}), sin asignar.
+ * Por dentro también tiene su código de 6 caracteres (/t/{code}).
+ */
+export async function createTagWithSlug(actor: string, input: { slug: string }): Promise<{ code: string }> {
+  return db().transaction(async (tx) => {
+    if (await aliasExists(tx, input.slug)) throw new AdminError(`revutags.com/${input.slug} ya existe`);
+    let tag: Tag | null = null;
+    await fillWithUniqueCodes(1, async ([code]) => {
+      tag = await insertLooseTag(tx, code!);
+      return tag ? [code!] : [];
+    });
+    const created = tag! as Tag;
+    await insertAlias(tx, input.slug, created.id);
+    await insertTagEvent(tx, { tagId: created.id, actorEmail: actor, action: "create", before: null, after: { slug: input.slug } });
+    return { code: created.code };
   });
 }
