@@ -91,7 +91,7 @@ export async function handleScan(request: Request, key: LookupKey, deps: ScanDep
     return html(renderStatusPage(ok ? "not_found" : "rate_limited", deps.whatsappNumber), ok ? 404 : 429);
   }
 
-  if (await deps.isAdmin(request)) {
+  if (tag.code && (await deps.isAdmin(request))) {
     return redirect(`/admin/tags/${encodeURIComponent(tag.code)}`);
   }
 

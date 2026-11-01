@@ -1,4 +1,7 @@
 // Inventario de los enlaces que ya están grabados en NFCs en producción.
+// Lo usan la importación inicial (scripts/legacy) y el modo de emergencia de
+// lib/redirect/legacy-fallback.ts. La fuente de verdad es la BD: esto es la foto
+// del 31/10/2026.
 // Fuente: api/r/[slug].js (PLACES), data/shortlinks.json y public/analytics/index.html.
 // Cada alias se importa como un tag propio (puede ser un NFC físico distinto),
 // agrupado bajo su negocio.

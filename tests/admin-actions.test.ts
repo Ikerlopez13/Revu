@@ -13,6 +13,8 @@ const services = vi.hoisted(() => ({
   setBusinessArchived: vi.fn(),
   searchBusinesses: vi.fn(),
   searchPlaces: vi.fn(),
+  findAdminUser: vi.fn(),
+  setAdminPassword: vi.fn(),
 }));
 const session = vi.hoisted(() => ({ requireAdmin: vi.fn() }));
 
@@ -32,6 +34,7 @@ vi.mock("@/lib/admin/businesses", () => ({
 }));
 vi.mock("@/lib/db/queries/admin", () => ({ searchBusinesses: services.searchBusinesses }));
 vi.mock("@/lib/places", () => ({ searchPlaces: services.searchPlaces }));
+vi.mock("@/lib/db/queries/admin-users", () => ({ findAdminUser: services.findAdminUser, setAdminPassword: services.setAdminPassword }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 
@@ -50,6 +53,7 @@ const VALID: Record<string, unknown> = {
   createBusinessAction: { name: "Bar" },
   updateBusinessAction: { id: UUID, name: "Bar" },
   archiveBusinessAction: { id: UUID, archived: "true" },
+  changePasswordAction: { current: "vieja-contraseña", next: "nueva-contraseña-1", confirm: "nueva-contraseña-1" },
 };
 
 beforeEach(() => {
@@ -101,5 +105,25 @@ describe("server actions del panel", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     const r = await actions.relabelTagAction({ code: "AB3K9Z", label: "x" });
     expect(r).toEqual({ ok: false, error: "Algo ha fallado. Inténtalo de nuevo." });
+  });
+});
+
+describe("cambio de contraseña", () => {
+  it("exige la contraseña actual correcta", async () => {
+    const { hashPassword } = await import("@/lib/auth/password");
+    session.requireAdmin.mockResolvedValue("iker@example.com");
+    services.findAdminUser.mockResolvedValue({ id: "u", email: "iker@example.com", passwordHash: await hashPassword("la-buena-123") });
+    const bad = await actions.changePasswordAction({ current: "otra", next: "nueva-contraseña-1", confirm: "nueva-contraseña-1" });
+    expect(bad).toEqual({ ok: false, error: "La contraseña actual no es correcta" });
+    expect(services.setAdminPassword).not.toHaveBeenCalled();
+    const good = await actions.changePasswordAction({ current: "la-buena-123", next: "nueva-contraseña-1", confirm: "nueva-contraseña-1" });
+    expect(good.ok).toBe(true);
+    expect(services.setAdminPassword).toHaveBeenCalledWith("iker@example.com", expect.stringMatching(/^scrypt\$/));
+  });
+
+  it("la nueva debe tener 10+ caracteres y coincidir", async () => {
+    session.requireAdmin.mockResolvedValue("iker@example.com");
+    expect((await actions.changePasswordAction({ current: "x", next: "corta", confirm: "corta" })).ok).toBe(false);
+    expect((await actions.changePasswordAction({ current: "x", next: "nueva-contraseña-1", confirm: "otra-distinta-1" })).ok).toBe(false);
   });
 });

@@ -2,7 +2,7 @@
 // Se ejecutó una vez (los códigos quedan fijados en el SQL). Uso:
 //   npx tsx scripts/legacy/build-import-sql.ts > drizzle/0002_import_legacy.sql
 import { generateUniqueCodes } from "../../lib/codes/generate";
-import { LEGACY_BUSINESSES } from "./data";
+import { LEGACY_BUSINESSES } from "../../lib/redirect/legacy-data";
 
 const q = (v: string | null) => (v === null ? "NULL" : `'${v.replace(/'/g, "''")}'`);
 

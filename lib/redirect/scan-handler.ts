@@ -5,6 +5,7 @@ import { redis } from "@/lib/cache/redis";
 import { createCachedLookup, redisTagCache } from "@/lib/cache/tag-cache";
 import { findResolvedTag, insertScan } from "@/lib/db/queries/tags";
 import { env } from "@/lib/env";
+import { legacyFallback } from "./legacy-fallback";
 import { rateLimit } from "./rate-limit";
 import { handleScan } from "./resolve";
 import { renderStatusPage } from "./status-page";
@@ -22,11 +23,21 @@ export async function scan(request: Request, key: LookupKey): Promise<Response> 
 
 function runScan(request: Request, key: LookupKey): Promise<Response> {
   const r = redis();
+  const cachedLookup = createCachedLookup(r ? redisTagCache(r) : null, findResolvedTag, waitUntil);
   return handleScan(request, key, {
-    lookup: createCachedLookup(r ? redisTagCache(r) : null, findResolvedTag, waitUntil),
+    lookup: async (k) => {
+      try {
+        return await cachedLookup(k);
+      } catch (err) {
+        const fallback = k.kind === "alias" ? legacyFallback(k.value) : null;
+        if (!fallback) throw err;
+        console.error("DB no disponible: usando destino legacy de emergencia", err);
+        return fallback;
+      }
+    },
     rateLimit,
     isAdmin: isAdminRequest,
-    recordScan: insertScan,
+    recordScan: (scan) => (scan.tagId ? insertScan(scan) : Promise.resolve()),
     background: waitUntil,
     whatsappNumber: env().WHATSAPP_NUMBER,
   });
