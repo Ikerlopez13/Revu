@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sin conexión · RevuTags</title>
+<style>
+  :root { --bg:#fafafa; --ink:#14161a; --muted:#5f6368; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#131417; --ink:#f1f1f2; --muted:#a3a7ad; } }
+  body { margin:0; min-height:100dvh; display:grid; place-items:center; padding:24px 16px; background:var(--bg); color:var(--ink);
+    font:16px/1.5 -apple-system, BlinkMacSystemFont, system-ui, sans-serif; text-align:center; }
+  img { height:28px; margin-bottom:20px; }
+  p { color:var(--muted); margin:8px 0 24px; }
+  button { font:inherit; font-weight:600; padding:12px 20px; border-radius:12px; border:0; background:#ef2b2d; color:#fff; }
+</style>
+</head>
+<body>
+<main>
+  <picture><source srcset="/assets/logo-dark.svg" media="(prefers-color-scheme: dark)"><img src="/assets/logo.svg" alt="RevuTags"></picture>
+  <h1 style="font-size:20px;margin:0">Sin conexión</h1>
+  <p>El panel necesita internet para mostrar datos actualizados.</p>
+  <button onclick="location.reload()">Reintentar</button>
+</main>
+</body>
+</html>

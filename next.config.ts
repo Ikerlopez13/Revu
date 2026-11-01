@@ -6,6 +6,18 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Hay otro package-lock.json en el home: fijamos la raíz del proyecto.
   outputFileTracingRoot: dirname(fileURLToPath(import.meta.url)),
+  async headers() {
+    return [
+      {
+        // Permite que el SW servido desde /admin-sw.js controle /admin (su ámbito).
+        source: "/admin-sw.js",
+        headers: [
+          { key: "Service-Worker-Allowed", value: "/admin" },
+          { key: "Cache-Control", value: "no-cache" },
+        ],
+      },
+    ];
+  },
   async rewrites() {
     return {
       // El sitio estático (landing, configurador, analytics) vive en /public.

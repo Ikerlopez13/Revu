@@ -16,10 +16,13 @@
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "db:seed": "tsx scripts/seed.ts"
+    "db:seed": "tsx scripts/seed.mts",
+    "admin:password": "tsx scripts/admin-password.mts",
+    "db:local": "bash scripts/dev-db.sh",
+    "db:local:stop": "pg_ctl -D .devdb stop",
+    "dev:local": "bash scripts/dev-db.sh && next dev"
   },
   "dependencies": {
-    "@auth/drizzle-adapter": "^1.10.0",
     "@radix-ui/react-slot": "^1.2.3",
     "@upstash/ratelimit": "^2.0.7",
     "@upstash/redis": "^1.35.6",

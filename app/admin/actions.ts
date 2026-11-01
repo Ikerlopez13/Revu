@@ -18,7 +18,10 @@ import {
   updateDestinationSchema,
 } from "@/lib/admin/schemas";
 import { assignTag, relabelTag, setTagStatus, unassignTag, updateDestination, type MutationResult } from "@/lib/admin/tags";
+import { AdminError } from "@/lib/admin/errors";
+import { MIN_PASSWORD_LENGTH, hashPassword, verifyPassword } from "@/lib/auth/password";
 import { requireAdmin } from "@/lib/auth/session";
+import { findAdminUser, setAdminPassword } from "@/lib/db/queries/admin-users";
 import { searchBusinesses } from "@/lib/db/queries/admin";
 import { searchPlaces, type PlaceResult } from "@/lib/places";
 
@@ -120,5 +123,23 @@ export async function archiveBusinessAction(raw: unknown) {
     await setBusinessArchived(input.id, input.archived);
     revalidatePath(`/admin/businesses/${input.id}`);
     revalidatePath("/admin/businesses");
+  });
+}
+
+// ---------- Cuenta ----------
+
+const changePasswordSchema = z
+  .object({
+    current: z.string().min(1, "Escribe tu contraseña actual"),
+    next: z.string().min(MIN_PASSWORD_LENGTH, `Mínimo ${MIN_PASSWORD_LENGTH} caracteres`).max(200),
+    confirm: z.string(),
+  })
+  .refine((v) => v.next === v.confirm, { path: ["confirm"], message: "Las contraseñas no coinciden" });
+
+export async function changePasswordAction(raw: unknown) {
+  return runAdminAction(deps, changePasswordSchema, raw, async (input, actor) => {
+    const user = await findAdminUser(actor);
+    if (!user || !(await verifyPassword(input.current, user.passwordHash))) throw new AdminError("La contraseña actual no es correcta");
+    await setAdminPassword(actor, await hashPassword(input.next));
   });
 }

@@ -9,22 +9,107 @@ import { StatusBadge } from "@/components/admin/status-badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input, Label, Textarea } from "@/components/ui/input";
+import { Breakdown } from "@/components/metrics/breakdown";
+import { DailyBars } from "@/components/metrics/daily-bars";
+import { ReviewsLine } from "@/components/metrics/reviews-line";
+import { Stat } from "@/components/metrics/stat";
 import { getBusiness, listBusinessTags } from "@/lib/db/queries/admin";
+import { getBusinessMetrics } from "@/lib/db/queries/metrics";
+import { OS_LABEL } from "@/lib/format";
+import { RANGES, parseRange, pctChange } from "@/lib/metrics";
+import { cn } from "@/lib/utils";
 
-export default async function BusinessPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function BusinessPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ id: string }>;
+  searchParams: Promise<Record<string, string | undefined>>;
+}) {
   const id = z.string().uuid().safeParse((await params).id);
   if (!id.success) notFound();
+  const range = parseRange((await searchParams).range);
   const business = await getBusiness(id.data);
   if (!business) notFound();
-  const tags = await listBusinessTags(business.id);
+  const [tags, m] = await Promise.all([listBusinessTags(business.id), getBusinessMetrics(business.id, range)]);
+  const firstReview = m.reviews.find((r) => r.reviewCount !== null);
+  const lastReview = [...m.reviews].reverse().find((r) => r.reviewCount !== null);
 
   return (
     <>
       <PageTitle title={business.name} subtitle={`/${business.slug}`} />
 
+      <nav className="grid grid-cols-3 rounded-lg bg-muted p-1 text-sm font-medium" aria-label="Periodo">
+        {RANGES.map((r) => (
+          <Link
+            key={r}
+            href={`?range=${r}`}
+            replace
+            scroll={false}
+            className={cn("rounded-md py-1.5 text-center", r === range ? "bg-card shadow-xs" : "text-muted-foreground")}
+          >
+            {r} días
+          </Link>
+        ))}
+      </nav>
+
+      <div className="grid grid-cols-2 gap-2">
+        <Stat label={`Escaneos (${range} días)`} value={m.current} delta={pctChange(m.current, m.previous)} />
+        <Stat label="Llevados a Google" value={m.redirects} hint={m.current ? `${Math.round((m.redirects / m.current) * 100)}% de los escaneos` : undefined} />
+        {lastReview ? (
+          <>
+            <Stat label="Reseñas en Google" value={lastReview.reviewCount ?? "—"} hint={lastReview.rating !== null ? `Nota ${lastReview.rating} ★` : undefined} />
+            <Stat
+              label="Reseñas nuevas"
+              value={`+${(lastReview.reviewCount ?? 0) - (firstReview?.reviewCount ?? 0)}`}
+              hint={`en los últimos ${range} días`}
+            />
+          </>
+        ) : null}
+      </div>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Escaneos por día</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-2">
+          <DailyBars data={m.daily} />
+        </CardContent>
+      </Card>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Por sistema</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Breakdown rows={m.byOs.map((o) => ({ key: o.os, label: OS_LABEL[o.os], count: o.count }))} />
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Por tag</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <Breakdown rows={m.byTag.map((t) => ({ key: t.code, label: t.label || t.code, sub: t.label ? t.code : null, count: t.count }))} />
+          </CardContent>
+        </Card>
+      </div>
+
+      {business.googlePlaceId && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Reseñas en Google</CardTitle>
+          </CardHeader>
+          <CardContent className="pt-2">
+            <ReviewsLine data={m.reviews} />
+          </CardContent>
+        </Card>
+      )}
+
       <Button asChild variant="outline">
         <Link href={`/analytics/${encodeURIComponent(business.slug)}`} target="_blank">
-          <BarChart3 /> Página pública de estadísticas
+          <BarChart3 /> Página pública para el cliente
         </Link>
       </Button>
 

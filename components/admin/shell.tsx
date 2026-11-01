@@ -1,6 +1,6 @@
 "use client";
 
-import { Boxes, Home, LogOut, Store, Tags } from "lucide-react";
+import { Boxes, CircleUser, Home, LogOut, Store, Tags } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
@@ -26,11 +26,16 @@ export function AdminShell({ email, children }: { email: string; children: React
           <Link href="/admin" className="flex items-center gap-2 font-bold">
             <Logo className="h-6" />
           </Link>
-          <form action={signOutAction}>
-            <button type="submit" className="flex items-center gap-1.5 text-sm text-muted-foreground" title={email}>
-              <LogOut className="size-4" /> Salir
-            </button>
-          </form>
+          <div className="flex items-center gap-4">
+            <Link href="/admin/cuenta" className="flex items-center gap-1.5 text-sm text-muted-foreground" title={email}>
+              <CircleUser className="size-4" /> Cuenta
+            </Link>
+            <form action={signOutAction}>
+              <button type="submit" className="flex items-center gap-1.5 text-sm text-muted-foreground">
+                <LogOut className="size-4" /> Salir
+              </button>
+            </form>
+          </div>
         </div>
       </header>
 

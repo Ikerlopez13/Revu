@@ -2,7 +2,12 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 
-export const metadata: Metadata = { title: "RevuTags", robots: { index: false } };
+export const metadata: Metadata = {
+  title: "RevuTags",
+  robots: { index: false },
+  manifest: "/manifest.webmanifest",
+  appleWebApp: { capable: true, title: "RevuTags", statusBarStyle: "black-translucent" },
+};
 
 export const viewport: Viewport = {
   width: "device-width",

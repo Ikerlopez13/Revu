@@ -2,22 +2,20 @@
 
 import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
-import { z } from "zod";
 import { signIn, signOut } from "@/auth";
 import { safeNextPath } from "@/lib/auth/gate";
 
-export async function signInWithGoogle(formData: FormData) {
-  await signIn("google", { redirectTo: safeNextPath(formData.get("next")?.toString()) });
-}
-
-export async function signInWithEmail(formData: FormData) {
-  const email = z.string().trim().toLowerCase().email().safeParse(formData.get("email"));
-  if (!email.success) redirect("/admin/login?error=email");
+export async function signInWithPassword(formData: FormData) {
+  const next = safeNextPath(formData.get("next")?.toString());
   try {
-    // Si el email no está en la allowlist, el callback signIn lo rechaza y no se envía nada.
-    await signIn("resend", { email: email.data, redirectTo: safeNextPath(formData.get("next")?.toString()) });
+    await signIn("credentials", {
+      email: formData.get("email")?.toString() ?? "",
+      password: formData.get("password")?.toString() ?? "",
+      redirectTo: next,
+    });
   } catch (err) {
-    if (err instanceof AuthError) redirect("/admin/login?error=AccessDenied");
+    // signIn lanza un redirect cuando va bien: hay que dejarlo pasar.
+    if (err instanceof AuthError) redirect(`/admin/login?error=1&next=${encodeURIComponent(next)}`);
     throw err;
   }
 }
