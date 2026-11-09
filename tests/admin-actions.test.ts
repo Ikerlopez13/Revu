@@ -8,6 +8,7 @@ const services = vi.hoisted(() => ({
   relabelTag: vi.fn(),
   unassignTag: vi.fn(),
   createTagWithSlug: vi.fn(),
+  linkSlug: vi.fn(),
   createBatch: vi.fn(),
   createBusiness: vi.fn(),
   updateBusiness: vi.fn(),
@@ -27,6 +28,7 @@ vi.mock("@/lib/admin/tags", () => ({
   relabelTag: services.relabelTag,
   unassignTag: services.unassignTag,
   createTagWithSlug: services.createTagWithSlug,
+  linkSlug: services.linkSlug,
 }));
 vi.mock("@/lib/admin/batches", () => ({ createBatch: services.createBatch }));
 vi.mock("@/lib/admin/businesses", () => ({
@@ -51,6 +53,7 @@ const VALID: Record<string, unknown> = {
   relabelTagAction: { code: "AB3K9Z", label: "Barra" },
   unassignTagAction: { code: "AB3K9Z" },
   createTagAction: { slug: "0001" },
+  linkSlugAction: { slug: "0002", business: { kind: "existing", id: UUID }, destinationType: "google_review" },
   searchBusinessAction: "birres",
   createBatchAction: { name: "Lote", quantity: 5 },
   createBusinessAction: { name: "Bar" },

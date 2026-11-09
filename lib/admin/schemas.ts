@@ -91,7 +91,13 @@ export const unassignSchema = z.object({ code: codeSchema });
 
 export const createTagSchema = z.object({ slug: slugSchema });
 
+/** Dar destino a un enlace corto que aún no existe (revutags.com/{slug}). */
+export const linkSlugSchema = z
+  .object({ slug: slugSchema, business: businessChoiceSchema, label: optionalText(60), ...destinationFields })
+  .transform(refineDestination);
+
 export const searchSchema = z.string().trim().min(2).max(120);
 
 export type AssignTagInput = z.infer<typeof assignTagSchema>;
+export type LinkSlugInput = z.infer<typeof linkSlugSchema>;
 export type BusinessChoice = z.infer<typeof businessChoiceSchema>;

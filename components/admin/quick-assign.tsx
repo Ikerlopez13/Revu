@@ -3,21 +3,29 @@
 import { Check, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useRef, useState, useTransition } from "react";
-import { assignTagAction } from "@/app/admin/actions";
+import { assignTagAction, linkSlugAction } from "@/app/admin/actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label } from "@/components/ui/input";
 import { BusinessPicker, type PickedBusiness } from "./business-picker";
 
 const LABEL_CHIPS = ["Barra", "Entrada", "Terraza", "Caja", "Mesa "];
 
+type Target = { code: string; slug?: never } | { slug: string; code?: never };
+
 /**
  * Asignación en 3 toques: 1) resultado del buscador, 2) etiqueta rápida
- * (opcional), 3) Activar.
+ * (opcional), 3) Activar. Con `slug` da destino a un enlace corto que aún
+ * no existe y al terminar abre su ficha.
  */
-export function QuickAssign({ code, initialLabel, submitLabel = "Activar tag" }: { code: string; initialLabel?: string | null; submitLabel?: string }) {
+export function QuickAssign({
+  initialLabel,
+  submitLabel = "Activar tag",
+  ...target
+}: Target & { initialLabel?: string | null; submitLabel?: string }) {
   const router = useRouter();
   const [business, setBusiness] = useState<PickedBusiness | null>(null);
   const [label, setLabel] = useState(initialLabel ?? "");
+  const [customUrl, setCustomUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const labelRef = useRef<HTMLInputElement>(null);
@@ -27,12 +35,19 @@ export function QuickAssign({ code, initialLabel, submitLabel = "Activar tag" }:
   const submit = () =>
     start(async () => {
       setError(null);
-      const r = await assignTagAction({
-        code,
+      const input = {
         label,
-        destinationType: "google_review",
-        business: business.kind === "existing" ? { kind: "existing", id: business.id } : { kind: "place", placeId: business.placeId, name: business.name },
-      });
+        destinationType: customUrl === null ? ("google_review" as const) : ("custom_url" as const),
+        destinationUrl: customUrl ?? undefined,
+        business: business.kind === "existing" ? { kind: "existing" as const, id: business.id } : { kind: "place" as const, placeId: business.placeId, name: business.name },
+      };
+      if (target.slug !== undefined) {
+        const r = await linkSlugAction({ ...input, slug: target.slug });
+        if (!r.ok) return setError(r.error);
+        router.replace(`/admin/tags/${r.data!.code}`);
+        return;
+      }
+      const r = await assignTagAction({ ...input, code: target.code });
       if (!r.ok) return setError(r.error);
       router.refresh();
     });
@@ -70,6 +85,30 @@ export function QuickAssign({ code, initialLabel, submitLabel = "Activar tag" }:
           ))}
         </div>
         <Input id="label" ref={labelRef} value={label} maxLength={60} onChange={(e) => setLabel(e.target.value)} placeholder="Mesa 4, Barra…" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="flex items-center gap-2 text-sm font-medium">
+          <input
+            type="checkbox"
+            className="size-4 accent-brand"
+            checked={customUrl !== null}
+            onChange={(e) => setCustomUrl(e.target.checked ? "" : null)}
+          />
+          Mandar a una URL propia en vez de a la reseña
+        </label>
+        {customUrl !== null && (
+          <Input
+            type="url"
+            inputMode="url"
+            autoCapitalize="none"
+            autoCorrect="off"
+            value={customUrl}
+            onChange={(e) => setCustomUrl(e.target.value)}
+            placeholder="https://…"
+            aria-label="URL de destino"
+          />
+        )}
       </div>
 
       <Button size="lg" variant="brand" onClick={submit} disabled={pending}>

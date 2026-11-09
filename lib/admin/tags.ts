@@ -16,7 +16,7 @@ import { fillWithUniqueCodes } from "./batches";
 import type { Tag, TagEventAction } from "@/lib/db/schema";
 import { resolveBusinessChoice } from "./businesses";
 import { AdminError } from "./errors";
-import type { AssignTagInput } from "./schemas";
+import type { AssignTagInput, LinkSlugInput } from "./schemas";
 
 type Snapshot = Pick<Tag, "businessId" | "status" | "destinationType" | "destinationUrl" | "label">;
 
@@ -132,21 +132,53 @@ export function unassignTag(actor: string, input: { code: string }) {
   });
 }
 
+/** Crea el tag (con su código interno de 6 caracteres) y le pone la URL corta. */
+async function insertSlugTag(tx: Executor, actor: string, slug: string): Promise<Tag> {
+  if (await aliasExists(tx, slug)) throw new AdminError(`revutags.com/${slug} ya existe`);
+  let tag: Tag | null = null;
+  await fillWithUniqueCodes(1, async ([code]) => {
+    tag = await insertLooseTag(tx, code!);
+    return tag ? [code!] : [];
+  });
+  const created = tag! as Tag;
+  await insertAlias(tx, slug, created.id);
+  await insertTagEvent(tx, { tagId: created.id, actorEmail: actor, action: "create", before: null, after: { slug } });
+  return created;
+}
+
 /**
  * Tag nuevo con URL corta propia (revutags.com/{slug}), sin asignar.
  * Por dentro también tiene su código de 6 caracteres (/t/{code}).
  */
 export async function createTagWithSlug(actor: string, input: { slug: string }): Promise<{ code: string }> {
-  return db().transaction(async (tx) => {
-    if (await aliasExists(tx, input.slug)) throw new AdminError(`revutags.com/${input.slug} ya existe`);
-    let tag: Tag | null = null;
-    await fillWithUniqueCodes(1, async ([code]) => {
-      tag = await insertLooseTag(tx, code!);
-      return tag ? [code!] : [];
+  return db().transaction(async (tx) => ({ code: (await insertSlugTag(tx, actor, input.slug)).code }));
+}
+
+/**
+ * Un NFC grabado con revutags.com/{slug} que aún no existe: se le da destino
+ * y queda activo, todo en una transacción (o se crea entero o nada).
+ */
+export async function linkSlug(actor: string, input: LinkSlugInput): Promise<MutationResult> {
+  const tag = await db().transaction(async (tx) => {
+    const created = await insertSlugTag(tx, actor, input.slug);
+    const business = await resolveBusinessChoice(tx, input.business);
+    if (input.destinationType === "google_review" && !business.googlePlaceId) throw new AdminError(NO_PLACE);
+    const updated = await updateTag(tx, created.id, {
+      businessId: business.id,
+      label: input.label,
+      destinationType: input.destinationType,
+      destinationUrl: input.destinationUrl,
+      status: "active",
     });
-    const created = tag! as Tag;
-    await insertAlias(tx, input.slug, created.id);
-    await insertTagEvent(tx, { tagId: created.id, actorEmail: actor, action: "create", before: null, after: { slug: input.slug } });
-    return { code: created.code };
+    await insertTagEvent(tx, { tagId: created.id, actorEmail: actor, action: "assign", ...diff(snapshot(created), snapshot(updated)) });
+    return updated;
   });
+  try {
+    // Sobrescribe también el "no existe" que pudo quedar en caché para el slug.
+    await refreshTagCache(tag.id);
+    return { code: tag.code, cacheWarning: false };
+  } catch (err) {
+    console.error("refreshTagCache failed", err);
+    return { code: tag.code, cacheWarning: true };
+  }
 }

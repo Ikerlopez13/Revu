@@ -9,6 +9,7 @@ import { createBusiness, setBusinessArchived, updateBusiness } from "@/lib/admin
 import {
   assignTagSchema,
   createTagSchema,
+  linkSlugSchema,
   businessInputSchema,
   createBatchSchema,
   relabelSchema,
@@ -18,7 +19,7 @@ import {
   updateBusinessSchema,
   updateDestinationSchema,
 } from "@/lib/admin/schemas";
-import { assignTag, createTagWithSlug, relabelTag, setTagStatus, unassignTag, updateDestination, type MutationResult } from "@/lib/admin/tags";
+import { assignTag, createTagWithSlug, linkSlug, relabelTag, setTagStatus, unassignTag, updateDestination, type MutationResult } from "@/lib/admin/tags";
 import { AdminError } from "@/lib/admin/errors";
 import { MIN_PASSWORD_LENGTH, hashPassword, verifyPassword } from "@/lib/auth/password";
 import { requireAdmin } from "@/lib/auth/session";
@@ -66,6 +67,10 @@ export async function createTagAction(raw: unknown) {
   });
   if (result.ok && result.data) redirect(`/admin/tags/${result.data.code}`);
   return result;
+}
+
+export async function linkSlugAction(raw: unknown) {
+  return runAdminAction(deps, linkSlugSchema, raw, async (input, actor) => afterTagChange(await linkSlug(actor, input)));
 }
 
 // ---------- Búsqueda (asignación rápida) ----------

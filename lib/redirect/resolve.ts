@@ -81,11 +81,11 @@ export function countryOf(request: Request): string | null {
   return c && /^[A-Z]{2}$/.test(c) ? c : null;
 }
 
-/** "Soy un admin": abre el panel con el formulario de nuevo tag relleno con este slug. */
-export function adminCreateHref(key: LookupKey): string {
+/** "Soy un admin": abre el panel para darle destino a este enlace. */
+export function adminLinkHref(key: LookupKey): string {
   if (key.kind !== "alias") return "/admin/tags";
   const slug = slugSchema.safeParse(key.value);
-  return slug.success ? `/admin/tags?nuevo=${encodeURIComponent(slug.data)}` : "/admin/tags";
+  return slug.success ? `/admin/enlazar/${encodeURIComponent(slug.data)}` : "/admin/tags";
 }
 
 /** Ruta crítica: /t/{code} y alias legacy. */
@@ -97,7 +97,7 @@ export async function handleScan(request: Request, key: LookupKey, deps: ScanDep
     // Los fallos tienen un límite aparte, mucho más bajo, contra la enumeración.
     const ok = await deps.rateLimit(request, "miss");
     if (!ok) return html(renderStatusPage("rate_limited", deps.whatsappNumber), 429);
-    return html(renderStatusPage("not_found", deps.whatsappNumber, undefined, { adminHref: adminCreateHref(key) }), 404);
+    return html(renderStatusPage("not_found", deps.whatsappNumber, undefined, { adminHref: adminLinkHref(key) }), 404);
   }
 
   if (tag.code && (await deps.isAdmin(request))) {

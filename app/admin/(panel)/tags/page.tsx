@@ -5,7 +5,6 @@ import { NewTagForm } from "@/components/admin/new-tag-form";
 import { PageTitle } from "@/components/admin/shell";
 import { StatusBadge } from "@/components/admin/status-badge";
 import { TagFilters } from "@/components/admin/tag-filters";
-import { slugSchema } from "@/lib/admin/slugs";
 import { listBatches, listBusinessOptions, listTags } from "@/lib/db/queries/admin";
 
 const filtersSchema = z.object({
@@ -13,8 +12,6 @@ const filtersSchema = z.object({
   business: z.string().uuid().optional().catch(undefined),
   batch: z.string().uuid().optional().catch(undefined),
   q: z.string().trim().max(60).optional().catch(undefined),
-  // Viene del enlace "Soy un admin" de un slug que no existe.
-  nuevo: slugSchema.optional().catch(undefined),
 });
 
 export default async function TagsPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
@@ -28,7 +25,7 @@ export default async function TagsPage({ searchParams }: { searchParams: Promise
   return (
     <>
       <PageTitle title="Tags" subtitle={`${rows.length}${rows.length === 200 ? "+" : ""} resultados`} />
-      <NewTagForm initialSlug={f.nuevo} />
+      <NewTagForm />
       <TagFilters businesses={businesses} batches={batches.map((b) => ({ id: b.id, name: b.name }))} />
       <ul className="divide-y overflow-hidden rounded-xl border bg-card">
         {rows.map((t) => (
