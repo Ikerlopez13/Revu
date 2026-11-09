@@ -35,7 +35,7 @@ export default async function LinkSlugPage({ params }: { params: Promise<{ slug:
       <Card className="border-brand/40">
         <CardHeader>
           <CardTitle>¿A dónde debe llevar?</CardTitle>
-          <CardDescription>Busca el negocio. Si no existe, elígelo de Google y se crea solo. Al guardar, el NFC funciona al momento.</CardDescription>
+          <CardDescription>Escribe el nombre del negocio o pega su enlace de Google Maps (Compartir → Copiar enlace). Al guardar, el NFC funciona al momento.</CardDescription>
         </CardHeader>
         <CardContent>
           <QuickAssign slug={slug} submitLabel="Activar enlace" />

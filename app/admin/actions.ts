@@ -24,7 +24,9 @@ import { AdminError } from "@/lib/admin/errors";
 import { MIN_PASSWORD_LENGTH, hashPassword, verifyPassword } from "@/lib/auth/password";
 import { requireAdmin } from "@/lib/auth/session";
 import { findAdminUser, setAdminPassword } from "@/lib/db/queries/admin-users";
-import { searchBusinesses } from "@/lib/db/queries/admin";
+import { db } from "@/lib/db/client";
+import { findBusinessByPlaceId, searchBusinesses } from "@/lib/db/queries/admin";
+import { looksLikeMapsLink, resolveMapsLink } from "@/lib/maps-link";
 import { searchPlaces, type PlaceResult } from "@/lib/places";
 
 const deps = { requireAdmin };
@@ -83,6 +85,8 @@ export type BusinessSearchResult = {
 
 export async function searchBusinessAction(raw: unknown): Promise<ActionResult<BusinessSearchResult>> {
   return runAdminAction(deps, searchSchema, raw, async (q) => {
+    if (looksLikeMapsLink(q)) return fromMapsLink(q);
+    if (q.length > 120) throw new AdminError("Escribe un nombre más corto");
     const [existing, places] = await Promise.all([
       searchBusinesses(q),
       searchPlaces(q).then(
@@ -95,9 +99,18 @@ export async function searchBusinessAction(raw: unknown): Promise<ActionResult<B
       existing: existing.map(({ id, name, slug }) => ({ id, name, slug })),
       // Una ficha que ya es negocio solo aparece una vez, como existente.
       places: places.p.filter((p) => !known.has(p.placeId)),
-      placesError: places.ok ? undefined : "No se pudo buscar en Google",
+      placesError: places.ok ? undefined : "¿No sale en Google? Pega aquí el enlace de Google Maps del negocio",
     };
   });
+}
+
+/** Enlace de Google Maps pegado en el buscador: una sola ficha, sin API key. */
+async function fromMapsLink(link: string): Promise<BusinessSearchResult> {
+  const place = await resolveMapsLink(link).catch(() => null);
+  if (!place) throw new AdminError("No reconozco ese enlace. En Google Maps abre el negocio → Compartir → Copiar enlace");
+  const known = await findBusinessByPlaceId(db(), place.placeId);
+  if (known) return { existing: [{ id: known.id, name: known.name, slug: known.slug }], places: [] };
+  return { existing: [], places: [{ placeId: place.placeId, name: place.name ?? "", address: "Desde el enlace de Google Maps" }] };
 }
 
 // ---------- Lotes ----------

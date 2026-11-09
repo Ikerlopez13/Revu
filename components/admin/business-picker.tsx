@@ -52,7 +52,7 @@ export function BusinessPicker({ onPick, autoFocus }: { onPick: (b: PickedBusine
           enterKeyHint="search"
           autoFocus={autoFocus}
           autoComplete="off"
-          placeholder="Nombre del negocio…"
+          placeholder="Nombre o enlace de Google Maps…"
           value={q}
           onChange={(e) => setQ(e.target.value)}
           className="pl-9"

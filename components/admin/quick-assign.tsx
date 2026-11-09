@@ -55,8 +55,20 @@ export function QuickAssign({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-2 rounded-xl border bg-muted/40 px-3 py-2.5">
-        <div className="min-w-0">
-          <p className="truncate font-semibold">{business.name}</p>
+        <div className="min-w-0 flex-1">
+          {business.kind === "place" ? (
+            // Desde un enlace de Maps a veces no viene el nombre: se puede corregir.
+            <Input
+              value={business.name}
+              onChange={(e) => setBusiness({ ...business, name: e.target.value })}
+              placeholder="Nombre del negocio"
+              aria-label="Nombre del negocio"
+              maxLength={120}
+              className="h-9 font-semibold"
+            />
+          ) : (
+            <p className="truncate font-semibold">{business.name}</p>
+          )}
           <p className="truncate text-xs text-muted-foreground">
             {business.kind === "place" ? `Nuevo · ${business.address ?? "Google"}` : "Negocio existente"}
           </p>

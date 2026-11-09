@@ -96,7 +96,8 @@ export const linkSlugSchema = z
   .object({ slug: slugSchema, business: businessChoiceSchema, label: optionalText(60), ...destinationFields })
   .transform(refineDestination);
 
-export const searchSchema = z.string().trim().min(2).max(120);
+// Un nombre, o un enlace de Google Maps (que puede ser largo).
+export const searchSchema = z.string().trim().min(2).max(2000);
 
 export type AssignTagInput = z.infer<typeof assignTagSchema>;
 export type LinkSlugInput = z.infer<typeof linkSlugSchema>;
