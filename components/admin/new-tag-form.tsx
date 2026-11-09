@@ -5,8 +5,8 @@ import { listNumericAliases } from "@/lib/db/queries/admin";
 import { ActionForm } from "./action-form";
 
 /** Crear un tag con URL corta propia. Propone el siguiente número libre. */
-export async function NewTagForm() {
-  const suggested = nextSequentialSlug(await listNumericAliases());
+export async function NewTagForm({ initialSlug }: { initialSlug?: string }) {
+  const suggested = initialSlug ?? nextSequentialSlug(await listNumericAliases());
   const host = (process.env.PUBLIC_BASE_URL || "https://revutags.com").replace(/^https?:\/\//, "").replace(/\/+$/, "");
   return (
     <Card>
@@ -21,6 +21,7 @@ export async function NewTagForm() {
             <input
               name="slug"
               defaultValue={suggested}
+              autoFocus={!!initialSlug}
               required
               maxLength={40}
               autoCapitalize="none"

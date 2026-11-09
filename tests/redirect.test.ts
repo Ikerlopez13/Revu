@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { handleScan, type ScanDeps, type ScanRecord } from "@/lib/redirect/resolve";
+import { adminCreateHref, handleScan, type ScanDeps, type ScanRecord } from "@/lib/redirect/resolve";
 import type { LookupKey, ResolvedTag } from "@/lib/redirect/types";
 
 const IPHONE = "Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15";
@@ -98,6 +98,20 @@ describe("GET /t/[code]: resolución", () => {
     expect(deps.rateLimit).toHaveBeenCalledWith(expect.any(Request), "miss");
     await flush();
     expect(scans).toHaveLength(0);
+  });
+
+  it("slug inexistente → enlace discreto 'Soy un admin' que abre el alta de ese slug", async () => {
+    const { deps } = setup(null);
+    const body = await (await handleScan(req(), { kind: "alias", value: "0002" }, deps)).text();
+    expect(body).toContain('href="/admin/tags?nuevo=0002"');
+    expect(body).toContain("Soy un admin");
+  });
+
+  it("adminCreateHref: solo rellena slugs válidos y no reservados", () => {
+    expect(adminCreateHref({ kind: "alias", value: "mi-bar" })).toBe("/admin/tags?nuevo=mi-bar");
+    expect(adminCreateHref({ kind: "alias", value: "admin" })).toBe("/admin/tags");
+    expect(adminCreateHref({ kind: "alias", value: "<x>" })).toBe("/admin/tags");
+    expect(adminCreateHref(code)).toBe("/admin/tags");
   });
 
   it("enumeración: superado el límite de fallos → 429", async () => {

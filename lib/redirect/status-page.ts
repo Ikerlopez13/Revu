@@ -32,7 +32,17 @@ export function whatsappLink(number: string, code?: string): string {
   return `https://wa.me/${number.replace(/\D/g, "")}?text=${encodeURIComponent(text)}`;
 }
 
-export function renderStatusPage(kind: StatusKind, whatsappNumber: string, code?: string): string {
+export type StatusPageOptions = {
+  /** Enlace discreto "Soy un admin" (solo en "no existe"). */
+  adminHref?: string;
+};
+
+export function renderStatusPage(
+  kind: StatusKind,
+  whatsappNumber: string,
+  code?: string,
+  options: StatusPageOptions = {},
+): string {
   const { title, text } = COPY[kind];
   const wa = escapeHtml(whatsappLink(whatsappNumber, code));
   return `<!doctype html>
@@ -57,6 +67,7 @@ export function renderStatusPage(kind: StatusKind, whatsappNumber: string, code?
   p { margin:0 0 24px; color:var(--muted); }
   a.btn { display:block; padding:14px 18px; border-radius:12px; background:var(--wa); color:#fff; text-decoration:none; font-weight:600; }
   small { display:block; margin-top:20px; color:var(--muted); font-size:13px; }
+  a.admin { display:inline-block; margin-top:20px; padding:6px 8px; color:var(--muted); font-size:12px; text-decoration:underline; opacity:.75; }
 </style>
 </head>
 <body>
@@ -67,6 +78,7 @@ export function renderStatusPage(kind: StatusKind, whatsappNumber: string, code?
   <p>${escapeHtml(text)}</p>
   <a class="btn" href="${wa}">Escríbenos por WhatsApp</a>
   ${code ? `<small>Código del tag: ${escapeHtml(code)}</small>` : ""}
+  ${options.adminHref ? `<a class="admin" href="${escapeHtml(options.adminHref)}">Soy un admin</a>` : ""}
 </main>
 </body>
 </html>`;

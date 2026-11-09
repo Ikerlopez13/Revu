@@ -1,4 +1,5 @@
 import type { ScanOs, ScanVia } from "@/lib/db/schema";
+import { slugSchema } from "@/lib/admin/slugs";
 import { buildGoogleReviewUrl } from "./google-review";
 import { detectOs } from "./os";
 import { renderStatusPage } from "./status-page";
@@ -80,6 +81,13 @@ export function countryOf(request: Request): string | null {
   return c && /^[A-Z]{2}$/.test(c) ? c : null;
 }
 
+/** "Soy un admin": abre el panel con el formulario de nuevo tag relleno con este slug. */
+export function adminCreateHref(key: LookupKey): string {
+  if (key.kind !== "alias") return "/admin/tags";
+  const slug = slugSchema.safeParse(key.value);
+  return slug.success ? `/admin/tags?nuevo=${encodeURIComponent(slug.data)}` : "/admin/tags";
+}
+
 /** Ruta crítica: /t/{code} y alias legacy. */
 export async function handleScan(request: Request, key: LookupKey, deps: ScanDeps): Promise<Response> {
   const [allowed, tag] = await Promise.all([deps.rateLimit(request, "hit"), deps.lookup(key)]);
@@ -88,7 +96,8 @@ export async function handleScan(request: Request, key: LookupKey, deps: ScanDep
   if (!tag) {
     // Los fallos tienen un límite aparte, mucho más bajo, contra la enumeración.
     const ok = await deps.rateLimit(request, "miss");
-    return html(renderStatusPage(ok ? "not_found" : "rate_limited", deps.whatsappNumber), ok ? 404 : 429);
+    if (!ok) return html(renderStatusPage("rate_limited", deps.whatsappNumber), 429);
+    return html(renderStatusPage("not_found", deps.whatsappNumber, undefined, { adminHref: adminCreateHref(key) }), 404);
   }
 
   if (tag.code && (await deps.isAdmin(request))) {
